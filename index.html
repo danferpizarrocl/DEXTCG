@@ -139,14 +139,14 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="1.7";
+var VERSION="1.8";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
  $("cnt").textContent=nf(c);$("cnt2").textContent="de "+nf(tot)+" capturados · "+(c/tot*100).toFixed(1).replace(".",",")+" %";
- $("pb").style.width=(c/tot*100)+"%";$("pb").style.background=numColor(c/tot);$("cnt").style.color=numColor(c/tot);
+ $("pb").style.width=(c/tot*100)+"%";
  $("regs").innerHTML=regions.map(function(r){var a=byReg[r],k=a.filter(isOn).length;
-  return '<div class="rg"><b>'+r+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em>'+k+'/'+a.length+'</em></div>'}).join("");
+  return '<div class="rg"><b>'+r+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em style="color:'+numColor(k/a.length)+';font-weight:600">'+k+'/'+a.length+'</em></div>'}).join("");
 }
 function pickRnd(){var m=DEX.p.filter(function(p){return !isOn(p[0])});rnd=m.length?m[Math.floor(Math.random()*m.length)][0]:null}
 function renderAz(){
@@ -178,7 +178,7 @@ function renderGrid(){
  if(f==="on")list=list.filter(isOn);if(f==="off")list=list.filter(function(n){return !isOn(n)});
  var total=list.length, shown=list.slice(0,lim);
  var base=q?null:(all?DEX.p.map(function(p){return p[0]}):byReg[curReg]);
- $("info").innerHTML=q?('<span>'+total+' resultado'+(total===1?'':'s')+'</span>'):('<span>Capturados</span><b style="color:'+numColor(base.filter(isOn).length/base.length)+'">'+base.filter(isOn).length+'</b><span>de '+nf(base.length)+'</span>');
+ $("info").innerHTML=q?('<span>'+total+' resultado'+(total===1?'':'s')+'</span>'):('<span>Capturados</span><b style="color:'+(all?'var(--ac)':numColor(base.filter(isOn).length/base.length))+'">'+base.filter(isOn).length+'</b><span>de '+nf(base.length)+'</span>');
  if(!total){$("g").innerHTML='<div class="empty" style="grid-column:1/-1">Sin resultados.</div>';return}
  var h="", last=null, group=false;
  shown.forEach(function(n){var p=byNum[n],on=isOn(n);

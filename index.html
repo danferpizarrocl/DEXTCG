@@ -22,7 +22,8 @@ header .hr{display:flex;align-items:center;gap:10px}.hcard{display:flex;flex-dir
 #theme{width:40px;height:40px;padding:0;border-radius:50%}#theme svg{width:20px;height:20px}
 #lock{width:56px;height:56px;padding:0;border-radius:50%}#lock svg{width:28px;height:28px}#lock.ed{background:#e53935;border-color:#e53935;color:#fff}
 #edbar{display:none;flex:none;background:#e53935;color:#fff;padding:8px 16px;align-items:center;justify-content:space-between;font-size:14px;font-weight:600}#edbar.s{display:flex}#edbar button{background:#fff;color:#e53935;border:0;padding:8px 12px;font-weight:700}
-.capc{display:flex;align-items:baseline;gap:8px;white-space:nowrap;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 16px;margin:8px 0 0;font-size:15px;color:var(--tx2)}.capc b{font-size:26px;font-weight:700;line-height:1}.cap{font-size:20px;font-weight:700;margin:8px 2px 0}.cap small{font-size:14px;font-weight:400;color:var(--tx2)}
+.capc{display:flex;align-items:baseline;gap:6px;white-space:nowrap;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 12px;margin:8px 0 0;font-size:14px;color:var(--tx2)}.capc b{font-size:26px;font-weight:700;line-height:1}
+@media(max-width:340px){.capc{font-size:12px;gap:4px;padding:10px}.capc b{font-size:21px}}.cap{font-size:20px;font-weight:700;margin:8px 2px 0}.cap small{font-size:14px;font-weight:400;color:var(--tx2)}
 .tg{cursor:pointer;justify-content:space-between;margin-bottom:0}.tg .l{display:flex;align-items:center;gap:7px}.tg .ch{transition:transform .2s}.tg.o .ch{transform:rotate(180deg)}.tg.o{margin-bottom:12px}
 main{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 14px 16px;-webkit-overflow-scrolling:touch}
 .view{display:none}.view.on{display:block}
@@ -156,7 +157,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="2.4";
+var VERSION="2.5";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -325,7 +326,7 @@ function renderGrid(){
  var base=q?null:(all?DEX.p.map(function(p){return p[0]}):byReg[curReg]);
  var capN=q?0:base.filter(isOn).length,col=q?"":(all?"var(--ac)":numColor(capN/base.length));
  $("info").style.color=col;
- $("info").innerHTML=q?('<span>'+total+' resultado'+(total===1?'':'s')+'</span>'):('<span>Capturados</span><b>'+capN+'</b><span>de '+nf(base.length)+'</span><span style="font-size:13px">· '+(capN/base.length*100).toFixed(1).replace(".",",")+' %</span>');
+ $("info").innerHTML=q?('<span>'+total+' resultado'+(total===1?'':'s')+'</span>'):('<span>Capturados</span><b>'+capN+'</b><span>de '+nf(base.length)+'</span><b style="margin-left:auto">'+(capN/base.length*100).toFixed(1).replace(".",",")+' %</b>');
  if(!total){$("g").innerHTML='<div class="empty" style="grid-column:1/-1">Sin resultados.</div>';watch();return}
  var h=shown.map(cardHtml).join("");
  if(total>shown.length)h+='<div id="sent" style="grid-column:1/-1;height:40px;text-align:center"></div>';

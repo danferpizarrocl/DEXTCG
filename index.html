@@ -143,7 +143,7 @@ function nf(n){return n.toLocaleString("es-CL")}
 
 var S=load(), regions=[], byReg={}, byNum={}, curReg=null, rnd=null;
 DEX.p.forEach(function(p){byNum[p[0]]={n:p[0],name:p[1],reg:p[2]};if(!byReg[p[2]]){byReg[p[2]]=[];regions.push(p[2])}byReg[p[2]].push(p[0])});
-curReg=regions[0];
+curReg="*";
 
 function load(){try{var s=JSON.parse(localStorage.getItem(KEY));if(s&&s.caps)return s}catch(e){}
  var caps={};Object.keys(DEX.caps).forEach(function(k){caps[k]=DEX.caps[k]||""});return {caps:caps,last:null}}
@@ -153,7 +153,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="2.2";
+var VERSION="2.3";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -295,27 +295,36 @@ function renderMes(){
 function renderChips(){
  var r=$("reg");r.innerHTML=['*'].concat(regions).map(function(x){return '<option value="'+x+'">'+(x==='*'?'Todas las regiones':x)+'</option>'}).join("");
  r.value=curReg;
- r.onchange=function(){curReg=r.value;$("q").value="";lim=PAGE;renderGrid()};
+ r.onchange=function(){curReg=r.value;$("q").value="";resetList()};
 }
-var PAGE=160, lim=PAGE;
+var PAGE=60, lim=PAGE, curList=[], io=null;
+function cardHtml(n){var p=byNum[n],on=isOn(n);
+ return '<div class="c '+(on?'on':'off')+'" data-n="'+n+'">'+spr(n)+'<div class="nu">N.º '+n+'</div><div class="nm">'+esc(p.name)+'</div><div class="st">'+(on?'Capturado · '+fmt(S.caps[n]):'Falta')+'</div></div>'}
+function bindCards(root){Array.prototype.forEach.call(root.querySelectorAll(".c:not([data-b])"),function(e){e.setAttribute("data-b","1");e.onclick=function(){toggle(+e.getAttribute("data-n"))}})}
+function watch(){
+ if(io){io.disconnect();io=null}
+ var st=$("sent");if(!st)return;
+ if("IntersectionObserver" in window){io=new IntersectionObserver(function(es){if(es[0].isIntersecting)moreCards()},{root:document.querySelector("main"),rootMargin:"800px"});io.observe(st)}
+ else{st.innerHTML='<button id="more">Ver más</button>';$("more").onclick=moreCards}}
+function resetList(){lim=PAGE;document.querySelector("main").scrollTop=0;renderGrid()}
+function moreCards(){
+ var st=$("sent");if(!st)return;
+ var next=curList.slice(lim,lim+PAGE);lim+=next.length;
+ st.insertAdjacentHTML("beforebegin",next.map(cardHtml).join(""));bindCards($("g"));
+ if(lim>=curList.length){if(io){io.disconnect();io=null}st.remove()}else watch()}
 function renderGrid(){
  var q=$("q").value.trim().toLowerCase(), f=$("f").value, list, all=(curReg==="*");
  if(q){list=DEX.p.filter(function(p){return p[1].toLowerCase().indexOf(q)>-1||String(p[0])===q}).map(function(p){return p[0]})}
  else if(all)list=DEX.p.map(function(p){return p[0]});
  else list=byReg[curReg].slice();
  if(f==="on")list=list.filter(isOn);if(f==="off")list=list.filter(function(n){return !isOn(n)});
- var total=list.length, shown=list.slice(0,lim);
+ curList=list;var total=list.length, shown=list.slice(0,lim);
  var base=q?null:(all?DEX.p.map(function(p){return p[0]}):byReg[curReg]);
  $("info").innerHTML=q?('<span>'+total+' resultado'+(total===1?'':'s')+'</span>'):('<span>Capturados</span><b style="color:'+(all?'var(--ac)':numColor(base.filter(isOn).length/base.length))+'">'+base.filter(isOn).length+'</b><span>de '+nf(base.length)+'</span>');
- if(!total){$("g").innerHTML='<div class="empty" style="grid-column:1/-1">Sin resultados.</div>';return}
- var h="", last=null, group=false;
- shown.forEach(function(n){var p=byNum[n],on=isOn(n);
-  if(group&&p.reg!==last){last=p.reg;var cnt=list.filter(function(x){return byNum[x].reg===p.reg}).length;h+='<div class="rh">'+p.reg+' · '+cnt+'</div>'}
-  h+='<div class="c '+(on?'on':'off')+'" data-n="'+n+'">'+spr(n)+'<div class="nu">N.º '+n+'</div><div class="nm">'+esc(p.name)+'</div><div class="st">'+(on?'Capturado · '+fmt(S.caps[n]):'Falta')+'</div></div>'});
- if(total>shown.length)h+='<div style="grid-column:1/-1;text-align:center;padding:8px 0"><button id="more">Ver más ('+nf(total-shown.length)+')</button></div>';
- $("g").innerHTML=h;
- Array.prototype.forEach.call($("g").querySelectorAll(".c"),function(e){e.onclick=function(){toggle(+e.getAttribute("data-n"))}});
- var m=$("more");if(m)m.onclick=function(){lim+=PAGE;renderGrid()};
+ if(!total){$("g").innerHTML='<div class="empty" style="grid-column:1/-1">Sin resultados.</div>';watch();return}
+ var h=shown.map(cardHtml).join("");
+ if(total>shown.length)h+='<div id="sent" style="grid-column:1/-1;height:40px;text-align:center"></div>';
+ $("g").innerHTML=h;bindCards($("g"));watch();
 }
 var editing=false;
 function setEdit(v){editing=v;$("edbar").classList.toggle("s",v);$("lock").classList.toggle("ed",v);$("lock").innerHTML=ico(v?"lo":"lk")}
@@ -399,7 +408,7 @@ $("file").onchange=async function(){
  var k=Object.keys(caps).length;
  var i=await modal('<h3>Importar respaldo</h3><p>El archivo trae <b>'+k+'</b> capturados. Tus capturas actuales ('+Object.keys(S.caps).length+') se reemplazarán por estas.</p>',[{t:"Cancelar"},{t:"Reemplazar",pri:1}]);
  if(i!==1)return;S.caps=caps;save();rnd=null;renderAll();toast("Importado: "+k+" capturados")};
-$("q").oninput=function(){lim=PAGE;renderGrid()};$("f").onchange=function(){lim=PAGE;renderGrid()};
+$("q").oninput=resetList;$("f").onchange=resetList;
 
 $("t-prog").innerHTML=ico("chart")+"Mi progreso";$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};
 $("viewer").onclick=function(e){if(e.target===$("viewer"))closeViewer(false)};

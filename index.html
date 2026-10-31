@@ -24,10 +24,13 @@ header .hr{display:flex;align-items:center;gap:10px}.hcard{display:flex;flex-dir
 #edbar{display:none;flex:none;background:#e53935;color:#fff;padding:8px 16px;align-items:center;justify-content:space-between;font-size:14px;font-weight:600}#edbar.s{display:flex}#edbar button{background:#fff;color:#e53935;border:0;padding:8px 12px;font-weight:700}
 .hinfo{flex:1;min-width:0;padding:0 6px;white-space:nowrap;overflow:hidden;color:var(--tx2)}.hinfo .l1{font-size:12px}.hinfo .l1 b{font-size:clamp(22px,7.4vw,28px);font-weight:700;line-height:1}
 @media(max-width:400px){header{padding-left:12px;padding-right:12px}.hinfo{padding:0 4px}.hpct{padding-right:4px}header h1{font-size:19px}}
-.hbox{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:4px 10px;margin:0 8px}
+.hbox{--hs:clamp(16px,5.8vw,24px);flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:4px 10px;margin:0 8px}
 .hbox .hinfo{flex:none;max-width:none;padding:0;overflow:visible}.hbox .hpct{padding:0}
 @media(max-width:400px){.hbox{padding:4px 8px;margin:0 6px;gap:4px}.hinfo .l1 b{font-size:clamp(20px,6.2vw,26px)}.hbox .hpct{font-size:clamp(14px,4.4vw,17px)}}
 @media(max-width:340px){.hbox{padding:3px 6px;margin:0 4px}}
+.hbox #info .l1 b,.hbox #pct{font-size:var(--hs);font-weight:700;line-height:1}
+.hbox.w{--hs:clamp(13px,4.2vw,16px)}
+@media(max-width:340px){.hbox{--hs:clamp(15px,5.2vw,17px)}.hbox.w{--hs:13px}}
 .hbox .hinfo.w .l1 b{font-size:clamp(14px,4.6vw,17px)}.hbox .hpct.w{font-size:clamp(12px,3.6vw,13px)}
 .hpct{flex:none;font-size:clamp(15px,4.8vw,18px);font-weight:700;white-space:nowrap;padding-right:8px}
 @media(max-width:340px){header{padding-left:12px;padding-right:12px}header h1{font-size:17px}.hinfo{padding:0 4px}.hinfo .l1{font-size:11px}.hinfo .l1 b{font-size:21px}.hpct{font-size:14px;padding-right:4px}#theme{width:34px;height:34px}#lock{width:48px;height:48px}}
@@ -169,7 +172,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="3.1";
+var VERSION="3.2";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -336,6 +339,13 @@ function renderChips(){
  r.value=curReg;
  r.onchange=function(){curReg=r.value;$("q").value="";resetList()};
 }
+function fitHdr(){
+ var bx=document.querySelector(".hbox"),i=$("info"),q=$("pct");if(!bx||!i||!q)return;
+ var cs=getComputedStyle(bx),avail=bx.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-6;
+ var sz=Math.min(24,Math.max(16,window.innerWidth*0.058)),n=0;
+ bx.style.setProperty("--hs",sz+"px");
+ while(n++<20&&sz>11&&(i.getBoundingClientRect().width+q.getBoundingClientRect().width)>avail){sz-=0.5;bx.style.setProperty("--hs",sz+"px")}}
+window.addEventListener("resize",function(){fitHdr()});
 var PAGE=60, lim=PAGE, curList=[], io=null, yr="*";
 function yearOf(n){var d=S.caps[n];return d?String(d).slice(0,4):"none"}
 function syncYears(f){
@@ -374,7 +384,7 @@ function renderGrid(){
  var capN=q?0:base.filter(isOn).length,col=q?"":(all?"var(--ac)":numColor(capN/base.length));
  $("info").style.color=col;
  $("info").innerHTML=q?('<div class="l1"><b>'+total+'</b> resultado'+(total===1?'':'s')+'</div>'):('<div class="l1"><b>'+capN+'</b>'+(capN>=1000?'/':' de ')+nf(base.length)+'</div>');
- $("info").classList.toggle("w",!q&&capN>=1000);$("pct").classList.toggle("w",!q&&capN>=1000);$("pct").style.color=col;$("pct").textContent=q?"":(capN/base.length*100).toFixed(1).replace(".",",")+" %";
+ $("info").classList.toggle("w",!q&&capN>=1000);$("info").parentNode.classList.toggle("w",!q&&capN>=1000);$("pct").classList.toggle("w",!q&&capN>=1000);$("pct").style.color=col;$("pct").textContent=q?"":(capN/base.length*100).toFixed(1).replace(".",",")+" %";fitHdr();
  if(!total){$("g").innerHTML='<div class="empty" style="grid-column:1/-1">Sin resultados.</div>';watch();return}
  var h=shown.map(cardHtml).join("");
  if(total>shown.length)h+='<div id="sent" style="grid-column:1/-1;height:40px;text-align:center"></div>';

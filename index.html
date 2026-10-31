@@ -86,6 +86,14 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 .r-sir{background:#fde7f3;color:#9b1c63}.r-ir{background:#e6edff;color:#1f4fc0}.r-hy{background:#fff1c9;color:#8a5a00}
 .rrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}.rcd{flex:none;width:112px}.rcd img{width:112px;height:auto;border-radius:8px;display:block}.rcd .rb{display:inline-block;margin:6px 0 3px;font-size:11px;white-space:normal}.rcd p{font-size:12px;color:var(--tx2);line-height:1.25}
 .nosig{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--sp);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--tx2)}.nosig button{padding:6px 10px;font-size:12px}
+#sheet{position:fixed;top:0;bottom:0;left:0;right:0;max-width:560px;margin:0 auto;background:var(--bg);display:none;flex-direction:column;z-index:25}#sheet.s{display:flex}
+.shh{flex:none;display:flex;justify-content:flex-end;padding:calc(10px + env(safe-area-inset-top)) 14px 4px}#shx{width:48px;height:48px;border-radius:50%;padding:0}#shx svg{width:24px;height:24px}
+.shb{flex:1;overflow-y:auto;padding:0 14px 12px}
+.shf{flex:none;padding:8px 14px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--bd);background:var(--card)}
+@property --hp{syntax:"<number>";initial-value:0;inherits:false}
+@keyframes holdp{to{--hp:100}}
+.c{position:relative;-webkit-touch-callout:none}.c img{pointer-events:none;-webkit-user-drag:none}
+.c.hold::after{content:"";position:absolute;inset:-2px;border-radius:16px;padding:3px;background:conic-gradient(var(--ac) calc(var(--hp)*1%),transparent 0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:holdp 2s linear forwards;pointer-events:none}
 #viewer{position:fixed;inset:0;background:rgba(0,0,0,.93);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:30;padding:calc(72px + env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom))}#viewer.s{display:flex}
 #vx{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;width:56px;height:56px;border-radius:50%;padding:0;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff}#vx svg{width:28px;height:28px}
 #vimg{max-width:94vw;max-height:68vh;width:auto;height:auto;border-radius:14px;object-fit:contain}
@@ -126,6 +134,10 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
  <p class="mut" id="ver" style="text-align:center;margin-top:4px"></p></section>
 </main>
 <nav id="nav"></nav>
+<div id="sheet"><div class="shh"><button id="shx" aria-label="Cerrar"></button></div>
+<div class="shb"><div class="card"><div class="t" id="t-shp"></div><div class="azc" id="shp"></div></div>
+<div class="card"><div class="t" id="t-shr"></div><div id="shr"></div><div id="she"></div></div></div>
+<div class="shf"><button id="shv" class="pri" style="width:100%"></button></div></div>
 <div id="viewer"><button id="vx" aria-label="Cerrar"></button><img id="vimg" alt=""><div id="vcap"></div><a id="vebay" class="ebtn" rel="noopener"></a><div id="verr"></div></div>
 <div class="ov" id="ov"><div class="md" id="md"></div></div><div class="toast" id="toast"></div>
 <script>/*!
@@ -155,7 +167,7 @@ save:'<path d="M12 4v10m0 0l-4-4m4 4l4-4M5 19h14"/>',
 dl:'<path d="M12 4v10m0 0l-4-4m4 4l4-4M5 19h14"/>',
 up:'<path d="M12 16V6m0 0l-4 4m4-4l4 4M5 19h14"/>',
 re:'<path d="M20 11a8 8 0 10-2 6M20 5v6h-6"/>',
-ck:'<path d="M5 12l5 5 9-10"/>',lk:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',lo:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.5-1.9"/>',chv:'<path d="M6 9l6 6 6-6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',sr:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',moon:'<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>',star:'<path d="M12 3l2.5 6 6.5.5-5 4.3 1.6 6.4L12 17l-5.6 3.2L8 13.8 3 9.5 9.5 9z"/>',home:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'};
+ck:'<path d="M5 12l5 5 9-10"/>',lk:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',lo:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.5-1.9"/>',chv:'<path d="M6 9l6 6 6-6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',sr:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',dex:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',back:'<path d="M15 6l-6 6 6 6"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',moon:'<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>',star:'<path d="M12 3l2.5 6 6.5.5-5 4.3 1.6 6.4L12 17l-5.6 3.2L8 13.8 3 9.5 9.5 9z"/>',home:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'};
 function ico(n){return '<svg viewBox="0 0 24 24">'+IC[n]+'</svg>'}
 function $(i){return document.getElementById(i)}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -175,7 +187,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="3.4";
+var VERSION="3.5";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -194,12 +206,13 @@ function ebayHref(q){
  if(!IS_ANDROID)return web;
  return "intent://www.ebay.com/sch/i.php?_nkw="+encodeURIComponent(q)+"&_sacat=0#Intent;scheme=https;package=com.ebay.mobile;S.browser_fallback_url="+encodeURIComponent(web)+";end"}
 function ebaySet(a,q){a.href=ebayHref(q);if(IS_ANDROID){a.removeAttribute("target")}else{a.target="_blank"}}
-var vOpen=false,vtok=0;
+var vOpen=false,vtok=0,shOpen=false,skipPops=0;
+function goBack(){skipPops++;try{history.back()}catch(e){skipPops--}}
 function openViewer(c){
  var im=$("vimg"),tok=++vtok;
  im.src=c.images.small;$("verr").textContent="";
  $("vcap").innerHTML='<span class="rb '+RAR[c.rarity]+'">'+lab(c)+'</span><br>'+esc(c.set.name)+' · '+esc(String(c.set.releaseDate||"").slice(0,4))+(c.numTxt?' · '+esc(c.numTxt):'');
- var ve=$("vebay"),pn=(rnd!==null&&byNum[rnd])?byNum[rnd].name:"";
+ var ve=$("vebay"),pn=(curN!==null&&byNum[curN])?byNum[curN].name:"";
  if(pn){ve.innerHTML=ico("sr")+"Buscar esta carta en eBay";ebaySet(ve,pn+" "+(c.set.name||"")+" "+(c.rarity==="Alt Art"?"alternate art "+(c.numTxt||""):c.rarity==="Galarian Gallery"?"galarian gallery "+(c.numTxt||""):c.rarity)+(c.jp?" japanese":""));ve.style.display="flex"}else ve.style.display="none";
  $("viewer").classList.add("s");
  if(!vOpen){vOpen=true;try{history.pushState({v:1},"")}catch(e){}}
@@ -208,7 +221,7 @@ function openViewer(c){
 }
 function closeViewer(fromPop){
  if(!vOpen)return;vOpen=false;vtok++;$("viewer").classList.remove("s");$("vimg").removeAttribute("src");
- if(!fromPop){try{if(history.state&&history.state.v)history.back()}catch(e){}}
+ if(!fromPop){try{if(history.state&&history.state.v)goBack()}catch(e){}}
 }
 var itok=0, SC={}, TB="https://api.tcgdex.net/v2/en/";
 function codeErr(m){var e=new Error(m);e.code=m;return e}
@@ -266,54 +279,55 @@ function mergeCards(a,b){
 function diagText(st){
  function one(k,nm){var s=st[k];return nm+": "+(!s?"buscando…":s.ok?(s.cards.length+(s.cards.length===1?" carta":" cartas")):s.err)}
  return one("A","Fuente 1")+" · "+one("B","Fuente 2")+" · "+one("J","Fuente 3 (JP)")}
-function rarBtn(label){return '<button class="pri" id="rar-b" style="width:100%;margin-top:10px">'+label+'</button>'}
-function ebayBtn(n){
- var e=$("ebay");
+var TG_AZ={k:"az",rar:"rar",ebay:"ebay",btn:"rar-b",ea:"ebay-a"},TG_SH={k:"sh",rar:"shr",ebay:"she",btn:"shr-b",ea:"she-a"},RT={az:0,sh:0},IT={az:0,sh:0},curN=null;
+function rarBtn(label,tg){return '<button class="pri" id="'+tg.btn+'" style="width:100%;margin-top:10px">'+label+'</button>'}
+function ebayBtn(n,tg){
+ var e=$(tg.ebay);
  if(n===null||!byNum[n]){e.innerHTML="";return}
- e.innerHTML='<a class="ebtn" id="ebay-a" rel="noopener">'+ico("sr")+'Buscar '+esc(byNum[n].name)+' en eBay</a>';
- ebaySet($("ebay-a"),byNum[n].name+" pokemon card illustration rare")}
-function rarState(n){
- rtok++;itok++;ebayBtn(n);var box=$("rar");
+ e.innerHTML='<a class="ebtn" id="'+tg.ea+'" rel="noopener">'+ico("sr")+'Buscar '+esc(byNum[n].name)+' en eBay</a>';
+ ebaySet($(tg.ea),byNum[n].name+" pokemon card illustration rare")}
+function rarState(n,tg){
+ tg=tg||TG_AZ;RT[tg.k]++;IT[tg.k]++;ebayBtn(n,tg);var box=$(tg.rar);
  if(n===null){box.innerHTML="";return}
  var c=CC[n];
- if(c){renderRar(n,c.cards,c.diag,false);return}
- box.innerHTML='<div class="mut">Toca el botón para buscar sus cartas de máxima rareza.</div>'+rarBtn("Buscar cartas");
- $("rar-b").onclick=function(){searchRar(n)}}
-function searchRar(n){
- var tok=++rtok,box=$("rar");
- if(navigator.onLine===false){box.innerHTML='<div class="nosig"><span>Sin señal de internet</span><button id="rar-b">Reintentar</button></div>';$("rar-b").onclick=function(){searchRar(n)};return}
+ if(c){renderRar(n,c.cards,c.diag,false,tg);return}
+ box.innerHTML='<div class="mut">Toca el botón para buscar sus cartas de máxima rareza.</div>'+rarBtn("Buscar cartas",tg);
+ $(tg.btn).onclick=function(){searchRar(n,tg)}}
+function searchRar(n,tg){
+ tg=tg||TG_AZ;var tok=++RT[tg.k],box=$(tg.rar);
+ if(navigator.onLine===false){box.innerHTML='<div class="nosig"><span>Sin señal de internet</span><button id="'+tg.btn+'">Reintentar</button></div>';$(tg.btn).onclick=function(){searchRar(n,tg)};return}
  box.innerHTML='<div class="mut">Buscando cartas…</div>';
  var st={A:null,B:null,J:null};
  function upd(){
-  if(tok!==rtok)return;
+  if(tok!==RT[tg.k])return;
   var both=st.A&&st.B&&st.J,anyOk=(st.A&&st.A.ok)||(st.B&&st.B.ok)||(st.J&&st.J.ok);
   if(both&&!anyOk){
-   box.innerHTML='<div class="nosig"><span>'+(navigator.onLine===false?'Sin señal de internet':'El servidor de cartas no respondió, intenta de nuevo')+'</span></div><div class="rdiag">'+diagText(st)+'</div>'+rarBtn("Reintentar");
-   $("rar-b").onclick=function(){searchRar(n)};return}
+   box.innerHTML='<div class="nosig"><span>'+(navigator.onLine===false?'Sin señal de internet':'El servidor de cartas no respondió, intenta de nuevo')+'</span></div><div class="rdiag">'+diagText(st)+'</div>'+rarBtn("Reintentar",tg);
+   $(tg.btn).onclick=function(){searchRar(n,tg)};return}
   if(!anyOk)return;
   var cards=mergeCards(st.A&&st.A.ok?st.A.cards:[],(st.B&&st.B.ok?st.B.cards:[]).concat(st.J&&st.J.ok?st.J.cards:[]));
   var diag=diagText(st);
   if(both)CC[n]={cards:cards,diag:diag};
-  renderRar(n,cards,diag,!both)}
+  renderRar(n,cards,diag,!both,tg)}
  srcA(n).then(function(c){st.A={ok:1,cards:c}},function(e){st.A={ok:0,err:(e&&e.code)||"error"}}).then(upd);
  srcB(n).then(function(c){st.B={ok:1,cards:c}},function(e){st.B={ok:0,err:(e&&e.code)||"error"}}).then(upd);
  srcJ(n).then(function(c){st.J={ok:1,cards:c}},function(e){st.J={ok:0,err:(e&&e.code)||"error"}}).then(upd)}
-function renderRar(n,list,diag,partial){
- var box=$("rar"),tok=++itok;
- var foot='<div class="rdiag">'+diag+'</div>'+(partial?'':rarBtn("Actualizar"));
- function bind(){var b=$("rar-b");if(b)b.onclick=function(){delete CC[n];searchRar(n)}}
+function renderRar(n,list,diag,partial,tg){
+ tg=tg||TG_AZ;var box=$(tg.rar),tok=++IT[tg.k];
+ var foot='<div class="rdiag">'+diag+'</div>'+(partial?'':rarBtn("Actualizar",tg));
+ function bind(){var b=$(tg.btn);if(b)b.onclick=function(){delete CC[n];searchRar(n,tg)}}
  if(!list.length){box.innerHTML='<div class="empty" style="padding:6px 0">Sin cartas de máxima rareza para este Pokémon.</div>'+foot;bind();return}
- box.innerHTML='<div class="rsum" id="rsum"></div><div class="rrow" id="rrow"></div>'+foot;bind();
- var row=$("rrow"),sum=$("rsum"),els=[],pend=list.length,ok=0;
+ box.innerHTML='<div class="rsum"></div><div class="rrow"></div>'+foot;bind();
+ var row=box.querySelector(".rrow"),sum=box.querySelector(".rsum"),els=[],pend=list.length,ok=0;
  function draw(){
   var cnt={},cl={};list.forEach(function(c,i){if(els[i]){var l=lab(c);cnt[l]=(cnt[l]||0)+1;cl[l]=RAR[c.rarity]}});
   sum.innerHTML=ORD.filter(function(k){return cnt[k]}).map(function(k){return '<span class="rb '+cl[k]+'">'+k+' · '+cnt[k]+'</span>'}).join("");
   row.innerHTML="";els.forEach(function(e){if(e)row.appendChild(e)})}
  list.forEach(function(c,i){var im=new Image();im.alt="";
-  im.onload=function(){if(tok!==itok)return;ok++;pend--;var d=document.createElement("div");d.className="rcd";d.appendChild(im);
+  im.onload=function(){if(tok!==IT[tg.k])return;ok++;pend--;var d=document.createElement("div");d.className="rcd";d.appendChild(im);
    d.insertAdjacentHTML("beforeend",'<span class="rb '+RAR[c.rarity]+'">'+lab(c)+'</span><p>'+esc(c.set.name)+'<br>'+esc(String(c.set.releaseDate||"").slice(0,4))+(c.numTxt?' · '+esc(c.numTxt):'')+'</p>');
-   d.onclick=function(){openViewer(c)};els[i]=d;draw()};
-  im.onerror=function(){if(tok!==itok)return;pend--;if(pend===0&&ok===0){sum.innerHTML='<span class="mut">No se pudieron cargar las imágenes de las cartas.</span>'}};
+   d.onclick=function(){curN=n;openViewer(c)};els[i]=d;draw()};
+  im.onerror=function(){if(tok!==IT[tg.k])return;pend--;if(pend===0&&ok===0){sum.innerHTML='<span class="mut">No se pudieron cargar las imágenes de las cartas.</span>'}};
   im.src=c.images.small})}
 function renderAz(){
  if(rnd===null||isOn(rnd))pickRnd();
@@ -362,7 +376,27 @@ function syncYears(f){
  sel.value=yr;sel.style.display="block"}
 function cardHtml(n){var p=byNum[n],on=isOn(n);
  return '<div class="c '+(on?'on':'off')+'" data-n="'+n+'">'+spr(n)+'<div class="nu">N.º '+n+'</div><div class="nm">'+esc(p.name)+'</div><div class="st">'+(on?'Capturado · '+fmt(S.caps[n]):'Falta')+'</div></div>'}
-function bindCards(root){Array.prototype.forEach.call(root.querySelectorAll(".c:not([data-b])"),function(e){e.setAttribute("data-b","1");e.onclick=function(){toggle(+e.getAttribute("data-n"))}})}
+function openSheet(n){
+ if(!byNum[n])return;var p=byNum[n];
+ $("shp").innerHTML=spr(n)+'<div class="nm">'+esc(p.name)+'</div><div class="mut">N.º '+p.n+' · '+p.reg+' · '+(isOn(n)?'Capturado'+(S.caps[n]?' el '+fmt(S.caps[n]):''):'te falta')+'</div>';
+ $("sheet").classList.add("s");$("sheet").querySelector(".shb").scrollTop=0;
+ if(!shOpen){shOpen=true;try{history.pushState({s:1},"")}catch(e){}}
+ curN=n;rarState(n,TG_SH)}
+function closeSheet(fromPop){
+ if(!shOpen)return;shOpen=false;RT.sh++;IT.sh++;$("sheet").classList.remove("s");
+ if(!fromPop){try{if(history.state&&history.state.s)goBack()}catch(e){}}}
+var holdT=null,holdEl=null,holdXY=null,holdFlag=false;
+function holdCancel(){if(holdT){clearTimeout(holdT);holdT=null}if(holdEl){holdEl.classList.remove("hold");holdEl=null}}
+$("g").addEventListener("pointerdown",function(e){
+ holdFlag=false;
+ if(editing||e.button>0)return;
+ var c=e.target.closest?e.target.closest(".c"):null;if(!c)return;
+ holdCancel();holdEl=c;holdXY=[e.clientX,e.clientY];c.classList.add("hold");
+ holdT=setTimeout(function(){var n=+c.getAttribute("data-n");holdCancel();if(editing)return;holdFlag=true;try{if(navigator.vibrate)navigator.vibrate(30)}catch(x){}openSheet(n)},2000)});
+["pointerup","pointercancel","pointerleave"].forEach(function(t){$("g").addEventListener(t,holdCancel)});
+$("g").addEventListener("pointermove",function(e){if(holdT&&holdXY&&(Math.abs(e.clientX-holdXY[0])>10||Math.abs(e.clientY-holdXY[1])>10))holdCancel()});
+$("g").addEventListener("contextmenu",function(e){e.preventDefault()});
+function bindCards(root){Array.prototype.forEach.call(root.querySelectorAll(".c:not([data-b])"),function(e){e.setAttribute("data-b","1");e.onclick=function(){if(holdFlag){holdFlag=false;return}toggle(+e.getAttribute("data-n"))}})}
 function watch(){
  if(io){io.disconnect();io=null}
  var st=$("sent");if(!st)return;
@@ -479,9 +513,9 @@ $("q").oninput=resetList;$("f").onchange=resetList;$("yr").onchange=function(){y
 
 $("t-prog").innerHTML=ico("chart")+"Mi progreso";$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};
 $("viewer").onclick=function(e){if(e.target===$("viewer"))closeViewer(false)};
-window.addEventListener("popstate",function(){closeViewer(true)});
-document.addEventListener("keydown",function(e){if(e.key==="Escape")closeViewer(false)});
-$("t-az").innerHTML=ico("dice")+"Pokémon al azar";$("t-rar").innerHTML=ico("star")+"Cartas de máxima rareza";
+window.addEventListener("popstate",function(){if(skipPops>0){skipPops--;return}if(vOpen)closeViewer(true);else if(shOpen)closeSheet(true)});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(vOpen)closeViewer(false);else closeSheet(false)}});
+$("t-az").innerHTML=ico("dice")+"Pokémon al azar";$("t-shp").innerHTML=ico("dex")+"Datos del Pokémon";$("t-shr").innerHTML=ico("star")+"Cartas de máxima rareza";$("shx").innerHTML=ico("x");$("shv").innerHTML=ico("back")+"Volver";$("shx").onclick=function(){closeSheet(false)};$("shv").onclick=function(){closeSheet(false)};$("t-rar").innerHTML=ico("star")+"Cartas de máxima rareza";
 $("t-mes").innerHTML='<span class="l">'+ico("cal")+"Historial de capturas</span>"+'<span class="ch">'+ico("chv")+"</span>";
 $("t-mes").onclick=function(){var o=$("mes").style.display==="none";$("mes").style.display=o?"block":"none";$("t-mes").classList.toggle("o",o)};$("t-res").innerHTML=ico("save")+"Respaldo";
 var TABS=[["v-dex","home","Dex"],["v-prog","chart","Progreso"],["v-az","dice","Azar"],["v-res","save","Respaldo"]];

@@ -16,7 +16,11 @@ html,body{height:100%}
 body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;display:flex;flex-direction:column;max-width:560px;margin:0 auto;overflow:hidden;overscroll-behavior:none}
 header{flex:none;padding:calc(10px + env(safe-area-inset-top)) 16px 8px;display:flex;justify-content:space-between;align-items:center}
 header h1{font-size:20px;font-weight:700}
-header span{font-size:13px;color:var(--tx2);background:var(--card);border:1px solid var(--bd);border-radius:99px;padding:4px 10px}
+header .hr{display:flex;align-items:center;gap:10px}.hc{display:flex;align-items:baseline;gap:4px}.hc b{font-size:30px;font-weight:700;color:var(--ac);line-height:1}.hc small{font-size:13px;color:var(--tx2)}
+#lock{width:44px;height:44px;padding:0;border-radius:50%}#lock svg{width:22px;height:22px}#lock.ed{background:#e53935;border-color:#e53935;color:#fff}
+#edbar{display:none;flex:none;background:#e53935;color:#fff;padding:8px 16px;align-items:center;justify-content:space-between;font-size:14px;font-weight:600}#edbar.s{display:flex}#edbar button{background:#fff;color:#e53935;border:0;padding:8px 12px;font-weight:700}
+.cap{font-size:20px;font-weight:700;margin:8px 2px 0}.cap small{font-size:14px;font-weight:400;color:var(--tx2)}
+.tg{cursor:pointer;justify-content:space-between;margin-bottom:0}.tg .l{display:flex;align-items:center;gap:7px}.tg .ch{transition:transform .2s}.tg.o .ch{transform:rotate(180deg)}.tg.o{margin-bottom:12px}
 main{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 14px 16px;-webkit-overflow-scrolling:touch}
 .view{display:none}.view.on{display:block}
 nav{flex:none;display:flex;background:var(--card);border-top:1px solid var(--bd);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
@@ -24,7 +28,7 @@ nav button{flex:1;border:0;background:none;color:var(--tx3);display:flex;flex-di
 nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:var(--ac);font-weight:600}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
-.t{font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px;display:flex;align-items:center;gap:7px;margin-bottom:12px}
+.t{font-size:15px;font-weight:600;display:flex;align-items:center;gap:7px;margin-bottom:12px}
 .t svg{width:18px;height:18px;stroke:var(--ac);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .big{font-size:34px;font-weight:700}.mut{color:var(--tx2);font-size:13px}
 .row{display:flex;justify-content:space-between;align-items:baseline}
@@ -63,12 +67,13 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 #spl{position:fixed;inset:0;background:#e53935;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:99;transition:opacity .45s}#spl.h{opacity:0;pointer-events:none}#spl svg{width:150px;height:150px;border-radius:34px}#spl b{color:#fff;font-size:30px;letter-spacing:.5px}
 </style></head><body>
 <div id="spl"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#1d1d22"/><g transform="rotate(-8 256 256)"><rect x="150" y="100" width="212" height="300" rx="26" fill="#e53935"/><rect x="170" y="122" width="172" height="172" rx="14" fill="#ffe3e1"/><polygon points="256.0,142.0 271.9,184.2 316.9,186.2 281.7,214.3 293.6,257.8 256.0,233.0 218.4,257.8 230.3,214.3 195.1,186.2 240.1,184.2" fill="#c62828"/><rect x="170" y="316" width="112" height="14" rx="7" fill="#ffffff" opacity=".75"/><rect x="170" y="344" width="74" height="14" rx="7" fill="#ffffff" opacity=".75"/></g></svg><b>DexTCG</b></div>
-<header><h1>Pokédex 2025</h1><span id="hdr"></span></header>
+<header><h1>Pokédex 2025</h1><div class="hr"><div class="hc"><b id="hdrn">0</b><small id="hdrt"></small></div><button id="lock" aria-label="Candado de edición"></button></div></header>
+<div id="edbar"><span>Modo edición</span><button id="edend">Terminar edición</button></div>
 <main>
 <section class="view on" id="v-dex">
  <div class="sticky"><div class="chips" id="chips"></div>
  <div class="tools"><input type="search" id="q" placeholder="Buscar nombre o número"><select id="f"><option value="all">Todos</option><option value="on">Capturados</option><option value="off">Faltan</option></select></div></div>
- <div class="mut" id="info" style="margin:6px 2px 0"></div>
+ <div class="cap" id="info"></div>
  <div class="g" id="g"></div>
 </section>
 <section class="view" id="v-prog">
@@ -76,7 +81,7 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
  <div class="row"><span class="big" id="cnt">0</span><span class="mut" id="cnt2"></span></div>
  <div style="display:flex;margin:10px 0 4px"><div class="bar"><i id="pb"></i></div></div>
  <div id="regs"></div></div>
- <div class="card"><div class="t" id="t-mes"></div><div id="mes"></div></div>
+ <div class="card"><div class="t tg" id="t-mes"></div><div id="mes" style="display:none"></div></div>
 </section>
 <section class="view" id="v-az"><div class="card"><div class="t" id="t-az"></div><div class="azc" id="az"></div></div></section>
 <section class="view" id="v-res"><div class="card"><div class="t" id="t-res"></div>
@@ -113,7 +118,7 @@ save:'<path d="M12 4v10m0 0l-4-4m4 4l4-4M5 19h14"/>',
 dl:'<path d="M12 4v10m0 0l-4-4m4 4l4-4M5 19h14"/>',
 up:'<path d="M12 16V6m0 0l-4 4m4-4l4 4M5 19h14"/>',
 re:'<path d="M20 11a8 8 0 10-2 6M20 5v6h-6"/>',
-ck:'<path d="M5 12l5 5 9-10"/>',home:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'};
+ck:'<path d="M5 12l5 5 9-10"/>',lk:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',lo:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.5-1.9"/>',chv:'<path d="M6 9l6 6 6-6"/>',home:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'};
 function ico(n){return '<svg viewBox="0 0 24 24">'+IC[n]+'</svg>'}
 function $(i){return document.getElementById(i)}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -136,7 +141,7 @@ function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
  $("cnt").textContent=nf(c);$("cnt2").textContent="de "+nf(tot)+" capturados · "+(c/tot*100).toFixed(1).replace(".",",")+" %";
- $("pb").style.width=(c/tot*100)+"%";$("hdr").textContent=nf(c)+" / "+nf(tot);
+ $("pb").style.width=(c/tot*100)+"%";$("hdrn").textContent=nf(c);$("hdrt").textContent="/ "+nf(tot);
  $("regs").innerHTML=regions.map(function(r){var a=byReg[r],k=a.filter(isOn).length;
   return '<div class="rg"><b>'+r+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%"></i></div><em>'+k+'/'+a.length+'</em></div>'}).join("");
 }
@@ -168,9 +173,10 @@ function renderGrid(){
  else list=byReg[curReg].slice();
  if(f==="on")list=list.filter(isOn);if(f==="off")list=list.filter(function(n){return !isOn(n)});
  var total=list.length, shown=list.slice(0,lim);
- $("info").textContent=total?("Mostrando "+nf(shown.length)+" de "+nf(total)):"";
+ var base=q?null:(all?DEX.p.map(function(p){return p[0]}):byReg[curReg]);
+ $("info").innerHTML=q?(total+' resultado'+(total===1?'':'s')):('Capturados '+base.filter(isOn).length+' <small>de '+nf(base.length)+'</small>');
  if(!total){$("g").innerHTML='<div class="empty" style="grid-column:1/-1">Sin resultados.</div>';return}
- var h="", last=null, group=all&&!q;
+ var h="", last=null, group=false;
  shown.forEach(function(n){var p=byNum[n],on=isOn(n);
   if(group&&p.reg!==last){last=p.reg;var cnt=list.filter(function(x){return byNum[x].reg===p.reg}).length;h+='<div class="rh">'+p.reg+' · '+cnt+'</div>'}
   h+='<div class="c '+(on?'on':'off')+'" data-n="'+n+'">'+spr(n)+'<div class="nu">N.º '+n+'</div><div class="nm">'+esc(p.name)+'</div><div class="st">'+(on?'Capturado · '+fmt(S.caps[n]):'Falta')+'</div></div>'});
@@ -179,7 +185,11 @@ function renderGrid(){
  Array.prototype.forEach.call($("g").querySelectorAll(".c"),function(e){e.onclick=function(){toggle(+e.getAttribute("data-n"))}});
  var m=$("more");if(m)m.onclick=function(){lim+=PAGE;renderGrid()};
 }
+var editing=false;
+function setEdit(v){editing=v;$("edbar").classList.toggle("s",v);$("lock").classList.toggle("ed",v);$("lock").innerHTML=ico(v?"lo":"lk")}
+function locked(){toast("Bloqueado. Toca el candado para editar")}
 function toggle(n){
+ if(!editing){locked();return}
  if(isOn(n))delete S.caps[n];else S.caps[n]=today();
  save();renderProg();renderMes();renderGrid();renderAz();renderLast();
 }
@@ -249,7 +259,7 @@ $("bx").onclick=async function(){
 $("bj").onclick=async function(){
  var i=await modal(summary(),[{t:"Cancelar"},{t:"Descargar JSON",pri:1}]);if(i!==1)return;
  try{await download("pokedex2025_respaldo_"+today()+".json",new Blob([JSON.stringify({app:"pokedex2025",v:1,fecha:today(),caps:S.caps},null,1)],{type:"application/json"}));stamp();toast("JSON guardado")}catch(e){toast("No se guardó")}};
-$("bi").onclick=function(){$("file").value="";$("file").click()};
+$("bi").onclick=function(){if(!editing){locked();return}$("file").value="";$("file").click()};
 $("file").onchange=async function(){
  var f=this.files[0];if(!f)return;var caps;
  try{if(/\.json$/i.test(f.name)){var j=JSON.parse(await f.text());if(!j.caps)throw new Error("JSON inválido");caps=j.caps}
@@ -260,7 +270,8 @@ $("file").onchange=async function(){
 $("q").oninput=function(){lim=PAGE;renderGrid()};$("f").onchange=function(){lim=PAGE;renderGrid()};
 
 $("t-prog").innerHTML=ico("chart")+"Mi progreso";$("t-az").innerHTML=ico("dice")+"Pokémon al azar";
-$("t-mes").innerHTML=ico("cal")+"Capturas por mes";$("t-res").innerHTML=ico("save")+"Respaldo";
+$("t-mes").innerHTML='<span class="l">'+ico("cal")+"Capturas por mes</span>"+'<span class="ch">'+ico("chv")+"</span>";
+$("t-mes").onclick=function(){var o=$("mes").style.display==="none";$("mes").style.display=o?"block":"none";$("t-mes").classList.toggle("o",o)};$("t-res").innerHTML=ico("save")+"Respaldo";
 var TABS=[["v-dex","home","Dex"],["v-prog","chart","Progreso"],["v-az","dice","Azar"],["v-res","save","Respaldo"]];
 $("nav").innerHTML=TABS.map(function(t,i){return '<button data-v="'+t[0]+'" class="'+(i?'':'on')+'">'+ico(t[1])+t[2]+'</button>'}).join("");
 Array.prototype.forEach.call($("nav").children,function(b){b.onclick=function(){
@@ -268,6 +279,12 @@ Array.prototype.forEach.call($("nav").children,function(b){b.onclick=function(){
  Array.prototype.forEach.call(document.querySelectorAll(".view"),function(v){v.classList.toggle("on",v.id===b.getAttribute("data-v"))});
  document.querySelector("main").scrollTop=0}});
 function renderAll(){renderProg();renderAz();renderMes();renderChips();renderGrid();renderLast()}
+setEdit(false);
+$("lock").onclick=async function(){
+ if(editing){setEdit(false);toast("Bloqueado");return}
+ var i=await modal('<h3>¿Empezar a editar?</h3><p class="mut">Podrás marcar capturados e importar respaldos hasta que toques «Terminar edición».</p>',[{t:"Cancelar"},{t:"Editar",pri:1}]);
+ if(i===1){setEdit(true);toast("Modo edición")}};
+$("edend").onclick=function(){setEdit(false);toast("Bloqueado")};
 renderAll();
 setTimeout(function(){var e=$("spl");e.classList.add("h");setTimeout(function(){e.remove()},600)},1600);
 if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}

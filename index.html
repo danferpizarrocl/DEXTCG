@@ -78,6 +78,7 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 .rcd{cursor:pointer}
 .ebtn{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px 14px;text-decoration:none;font-size:15px;margin-top:10px}.ebtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #vebay{margin-top:0;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff;padding:12px 18px}
+.r-alt{background:#ece6ff;color:#4a2db4}.r-gg{background:#dff0fb;color:#0a5a85}
 .r-sar{background:#ffe9d6;color:#9a4300}.r-ar{background:#dff5ea;color:#0b6b46}
 .yh{display:flex;align-items:center;gap:8px;padding:10px 2px;border-bottom:1px solid var(--bd);cursor:pointer;font-size:15px}.yh b{flex:1;font-weight:600}.yh span{color:var(--tx2);font-size:13px}.yh .ch svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}.yh.o .ch svg{transform:rotate(180deg)}.ymo{padding:4px 2px 6px}
 .rdiag{font-size:11px;color:var(--tx3);margin-top:8px}
@@ -159,7 +160,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="2.6";
+var VERSION="2.7";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -169,7 +170,7 @@ function renderProg(){
   return '<div class="rg"><b>'+r+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em style="color:'+numColor(k/a.length)+';font-weight:600">'+k+'/'+a.length+'</em></div>'}).join("");
 }
 function pickRnd(){var m=DEX.p.filter(function(p){return !isOn(p[0])});rnd=m.length?m[Math.floor(Math.random()*m.length)][0]:null}
-var RAR={"Special Illustration Rare":"r-sir","Illustration Rare":"r-ir","Hyper Rare":"r-hy","Special Art Rare":"r-sar","Art Rare":"r-ar"},REN=["Special Illustration Rare","Illustration Rare","Hyper Rare"],ORD=["Special Illustration Rare","Illustration Rare","Hyper Rare","Special Art Rare · JP","Art Rare · JP"], CC={}, rtok=0, rar=null;
+var RAR={"Special Illustration Rare":"r-sir","Illustration Rare":"r-ir","Hyper Rare":"r-hy","Special Art Rare":"r-sar","Art Rare":"r-ar","Alt Art":"r-alt","Galarian Gallery":"r-gg"},REN=["Special Illustration Rare","Illustration Rare","Hyper Rare"],ORD=["Special Illustration Rare","Illustration Rare","Hyper Rare","Alt Art","Galarian Gallery","Special Art Rare · JP","Art Rare · JP"], CC={}, rtok=0, rar=null;
 function ensureRar(){if(rar!==rnd&&$("v-az").classList.contains("on")){rar=rnd;rarState(rnd)}}
 var IS_ANDROID=/Android/i.test(navigator.userAgent);
 function ebayWeb(q){return "https://www.ebay.com/sch/i.php?_nkw="+encodeURIComponent(q)+"&_sacat=0"}
@@ -182,9 +183,9 @@ var vOpen=false,vtok=0;
 function openViewer(c){
  var im=$("vimg"),tok=++vtok;
  im.src=c.images.small;$("verr").textContent="";
- $("vcap").innerHTML='<span class="rb '+RAR[c.rarity]+'">'+lab(c)+'</span><br>'+esc(c.set.name)+' · '+esc(String(c.set.releaseDate||"").slice(0,4));
+ $("vcap").innerHTML='<span class="rb '+RAR[c.rarity]+'">'+lab(c)+'</span><br>'+esc(c.set.name)+' · '+esc(String(c.set.releaseDate||"").slice(0,4))+(c.numTxt?' · '+esc(c.numTxt):'');
  var ve=$("vebay"),pn=(rnd!==null&&byNum[rnd])?byNum[rnd].name:"";
- if(pn){ve.innerHTML=ico("sr")+"Buscar esta carta en eBay";ebaySet(ve,pn+" "+(c.set.name||"")+" "+c.rarity+(c.jp?" japanese":""));ve.style.display="flex"}else ve.style.display="none";
+ if(pn){ve.innerHTML=ico("sr")+"Buscar esta carta en eBay";ebaySet(ve,pn+" "+(c.set.name||"")+" "+(c.rarity==="Alt Art"?"alternate art "+(c.numTxt||""):c.rarity==="Galarian Gallery"?"galarian gallery "+(c.numTxt||""):c.rarity)+(c.jp?" japanese":""));ve.style.display="flex"}else ve.style.display="none";
  $("viewer").classList.add("s");
  if(!vOpen){vOpen=true;try{history.pushState({v:1},"")}catch(e){}}
  var big=c.images.large;
@@ -206,11 +207,22 @@ function getJ(url){return fetchJ(url,20000).catch(function(e){
  if(/tiempo agotado|sin conexión|error 5|error 429/.test(e.code||"")){return new Promise(function(r){setTimeout(r,1200)}).then(function(){return fetchJ(url,20000)})}
  throw e})}
 function cardsOf(j){return Array.isArray(j)?j:(j&&Array.isArray(j.cards)?j.cards:null)}
+function numTxtA(c){var pre=(String(c.number||"").match(/^[A-Za-z]+/)||[""])[0];return c.set&&c.set.printedTotal?(c.number+"/"+pre+c.set.printedTotal):String(c.number||"")}
 function srcA(n){
- return getJ("https://api.pokemontcg.io/v2/cards?q="+encodeURIComponent("nationalPokedexNumbers:"+n)+"&pageSize=250&select=id,name,number,rarity,images,set").then(function(j){
+ return getJ("https://api.pokemontcg.io/v2/cards?q="+encodeURIComponent("nationalPokedexNumbers:"+n)+"&pageSize=250&select=id,name,number,rarity,subtypes,images,set").then(function(j){
   if(!j||!Array.isArray(j.data))throw codeErr("formato inesperado");
-  return j.data.map(function(c){var r=normR(c.rarity);if(!r||!c.images||!c.images.small||!c.set)return null;
-   return {rarity:r,set:{name:c.set.name,releaseDate:c.set.releaseDate},images:{small:c.images.small,large:c.images.large||c.images.small},num:String(c.number||"").replace(/^0+/,""),src:"A"}}).filter(Boolean)})}
+  var data=j.data,alt={},gm={};
+  data.forEach(function(c){var sid=c.set&&c.set.id;if(!sid||!/^(swsh(5|6|7|8|9|10|11|12)|swsh12pt5)$/.test(sid))return;
+   var st=c.subtypes||[],isVM=st.indexOf("VMAX")>-1,isVS=st.indexOf("VSTAR")>-1,isV=st.indexOf("V")>-1&&!isVM&&!isVS;
+   if((isVM||isVS)&&c.rarity==="Rare Secret"){alt[c.id]=1;return}
+   if(isV&&c.rarity==="Rare Ultra"){var k=sid+"|"+c.name;(gm[k]=gm[k]||[]).push(c)}});
+  Object.keys(gm).forEach(function(k){var g=gm[k];if(g.length>=2){g.sort(function(x,y){return parseInt(x.number,10)-parseInt(y.number,10)});alt[g[g.length-1].id]=1}});
+  return data.map(function(c){
+   if(!c.images||!c.images.small||!c.set)return null;
+   var gg=c.set.id==="swsh12pt5gg"||/galarian gallery/i.test(c.set.name||"")||/^GG/i.test(String(c.number||""));
+   var r=gg?"Galarian Gallery":(alt[c.id]?"Alt Art":normR(c.rarity));
+   if(!r)return null;
+   return {rarity:r,set:{name:c.set.name,releaseDate:c.set.releaseDate},images:{small:c.images.small,large:c.images.large||c.images.small},num:String(c.number||"").replace(/^0+/,""),numTxt:numTxtA(c),src:"A"}}).filter(Boolean)})}
 function srcT(n,lang){
  var jp=lang==="ja",norm=jp?normJ:normR,TBL="https://api.tcgdex.net/v2/"+lang+"/";
  var dexP=getJ(TBL+"dex-ids/"+n).catch(function(){return getJ(TBL+"cards?dexId=eq:"+n)});
@@ -228,7 +240,7 @@ function srcT(n,lang){
     var sid=d&&d.set&&d.set.id,sk=lang+"|"+sid;
     var sp=sid?(SC[sk]||(SC[sk]=getJ(TBL+"sets/"+encodeURIComponent(sid)).catch(function(){return {}}))):Promise.resolve({});
     return sp.then(function(sd){var img=(d&&d.image)||h.image;if(!img)return null;
-     return {rarity:h.rarity,jp:jp,set:{name:(d.set&&d.set.name)||(sd&&sd.name)||"",releaseDate:(sd&&sd.releaseDate)||""},images:{small:img+"/low.webp",large:img+"/high.webp"},num:String(h.local||"").replace(/^0+/,""),src:jp?"J":"B"}})}).catch(function(){return null})})).then(function(a){return a.filter(Boolean)})})})}
+     return {rarity:h.rarity,jp:jp,set:{name:(d.set&&d.set.name)||(sd&&sd.name)||"",releaseDate:(sd&&sd.releaseDate)||""},images:{small:img+"/low.webp",large:img+"/high.webp"},num:String(h.local||"").replace(/^0+/,""),numTxt:String(h.local||"")+(d.set&&d.set.cardCount&&d.set.cardCount.official?"/"+d.set.cardCount.official:""),src:jp?"J":"B"}})}).catch(function(){return null})})).then(function(a){return a.filter(Boolean)})})})}
 function srcB(n){return srcT(n,"en")}
 function srcJ(n){return srcT(n,"ja")}
 function mergeCards(a,b){
@@ -284,7 +296,7 @@ function renderRar(n,list,diag,partial){
   row.innerHTML="";els.forEach(function(e){if(e)row.appendChild(e)})}
  list.forEach(function(c,i){var im=new Image();im.alt="";
   im.onload=function(){if(tok!==itok)return;ok++;pend--;var d=document.createElement("div");d.className="rcd";d.appendChild(im);
-   d.insertAdjacentHTML("beforeend",'<span class="rb '+RAR[c.rarity]+'">'+lab(c)+'</span><p>'+esc(c.set.name)+'<br>'+esc(String(c.set.releaseDate||"").slice(0,4))+'</p>');
+   d.insertAdjacentHTML("beforeend",'<span class="rb '+RAR[c.rarity]+'">'+lab(c)+'</span><p>'+esc(c.set.name)+'<br>'+esc(String(c.set.releaseDate||"").slice(0,4))+(c.numTxt?' · '+esc(c.numTxt):'')+'</p>');
    d.onclick=function(){openViewer(c)};els[i]=d;draw()};
   im.onerror=function(){if(tok!==itok)return;pend--;if(pend===0&&ok===0){sum.innerHTML='<span class="mut">No se pudieron cargar las imágenes de las cartas.</span>'}};
   im.src=c.images.small})}

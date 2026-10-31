@@ -72,6 +72,8 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 #vimg{max-width:94vw;max-height:68vh;width:auto;height:auto;border-radius:14px;object-fit:contain}
 #vcap{color:#fff;text-align:center;font-size:14px;line-height:1.4}#vcap .rb{display:inline-block;margin-bottom:6px}#verr{color:#ffd9d6;font-size:13px;text-align:center;min-height:18px}
 .rcd{cursor:pointer}
+.ebtn{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px 14px;text-decoration:none;font-size:15px;margin-top:10px}.ebtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#vebay{margin-top:0;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff;padding:12px 18px}
 .rdiag{font-size:11px;color:var(--tx3);margin-top:8px}
 .empty{color:var(--tx2);text-align:center;padding:24px 0}
 #spl{position:fixed;inset:0;background:#e53935;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:99;transition:opacity .45s}#spl.h{opacity:0;pointer-events:none}#spl svg{width:150px;height:150px;border-radius:34px}#spl b{color:#fff;font-size:30px;letter-spacing:.5px}
@@ -94,7 +96,7 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
  <div class="card"><div class="t tg" id="t-mes"></div><div id="mes" style="display:none"></div></div>
 </section>
 <section class="view" id="v-az"><div class="card"><div class="t" id="t-az"></div><div class="azc" id="az"></div></div>
- <div class="card" id="rarc"><div class="t" id="t-rar"></div><div id="rar"></div></div></section>
+ <div class="card" id="rarc"><div class="t" id="t-rar"></div><div id="rar"></div><div id="ebay"></div></div></section>
 <section class="view" id="v-res"><div class="card"><div class="t" id="t-res"></div>
  <div class="bt" style="flex-direction:column"><button class="pri" id="bx"></button><button id="bj"></button><button id="bi"></button></div>
  <p class="mut" style="margin-top:12px" id="lastb"></p>
@@ -102,7 +104,7 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
  <p class="mut" id="ver" style="text-align:center;margin-top:4px"></p></section>
 </main>
 <nav id="nav"></nav>
-<div id="viewer"><button id="vx" aria-label="Cerrar"></button><img id="vimg" alt=""><div id="vcap"></div><div id="verr"></div></div>
+<div id="viewer"><button id="vx" aria-label="Cerrar"></button><img id="vimg" alt=""><div id="vcap"></div><a id="vebay" class="ebtn" rel="noopener"></a><div id="verr"></div></div>
 <div class="ov" id="ov"><div class="md" id="md"></div></div><div class="toast" id="toast"></div>
 <script>/*!
 
@@ -131,7 +133,7 @@ save:'<path d="M12 4v10m0 0l-4-4m4 4l4-4M5 19h14"/>',
 dl:'<path d="M12 4v10m0 0l-4-4m4 4l4-4M5 19h14"/>',
 up:'<path d="M12 16V6m0 0l-4 4m4-4l4 4M5 19h14"/>',
 re:'<path d="M20 11a8 8 0 10-2 6M20 5v6h-6"/>',
-ck:'<path d="M5 12l5 5 9-10"/>',lk:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',lo:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.5-1.9"/>',chv:'<path d="M6 9l6 6 6-6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',star:'<path d="M12 3l2.5 6 6.5.5-5 4.3 1.6 6.4L12 17l-5.6 3.2L8 13.8 3 9.5 9.5 9z"/>',home:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'};
+ck:'<path d="M5 12l5 5 9-10"/>',lk:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',lo:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.5-1.9"/>',chv:'<path d="M6 9l6 6 6-6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',sr:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',star:'<path d="M12 3l2.5 6 6.5.5-5 4.3 1.6 6.4L12 17l-5.6 3.2L8 13.8 3 9.5 9.5 9z"/>',home:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'};
 function ico(n){return '<svg viewBox="0 0 24 24">'+IC[n]+'</svg>'}
 function $(i){return document.getElementById(i)}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -151,7 +153,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="2.1";
+var VERSION="2.2";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -163,11 +165,20 @@ function renderProg(){
 function pickRnd(){var m=DEX.p.filter(function(p){return !isOn(p[0])});rnd=m.length?m[Math.floor(Math.random()*m.length)][0]:null}
 var RAR={"Special Illustration Rare":"r-sir","Illustration Rare":"r-ir","Hyper Rare":"r-hy"}, CC={}, rtok=0, rar=null;
 function ensureRar(){if(rar!==rnd&&$("v-az").classList.contains("on")){rar=rnd;rarState(rnd)}}
+var IS_ANDROID=/Android/i.test(navigator.userAgent);
+function ebayWeb(q){return "https://www.ebay.com/sch/i.php?_nkw="+encodeURIComponent(q)+"&_sacat=0"}
+function ebayHref(q){
+ var web=ebayWeb(q);
+ if(!IS_ANDROID)return web;
+ return "intent://www.ebay.com/sch/i.php?_nkw="+encodeURIComponent(q)+"&_sacat=0#Intent;scheme=https;package=com.ebay.mobile;S.browser_fallback_url="+encodeURIComponent(web)+";end"}
+function ebaySet(a,q){a.href=ebayHref(q);if(IS_ANDROID){a.removeAttribute("target")}else{a.target="_blank"}}
 var vOpen=false,vtok=0;
 function openViewer(c){
  var im=$("vimg"),tok=++vtok;
  im.src=c.images.small;$("verr").textContent="";
  $("vcap").innerHTML='<span class="rb '+RAR[c.rarity]+'">'+c.rarity+'</span><br>'+esc(c.set.name)+' · '+esc(String(c.set.releaseDate||"").slice(0,4));
+ var ve=$("vebay"),pn=(rnd!==null&&byNum[rnd])?byNum[rnd].name:"";
+ if(pn){ve.innerHTML=ico("sr")+"Buscar esta carta en eBay";ebaySet(ve,pn+" "+(c.set.name||"")+" "+c.rarity);ve.style.display="flex"}else ve.style.display="none";
  $("viewer").classList.add("s");
  if(!vOpen){vOpen=true;try{history.pushState({v:1},"")}catch(e){}}
  var big=c.images.large;
@@ -218,8 +229,13 @@ function diagText(st){
  function one(k,nm){var s=st[k];return nm+": "+(!s?"buscando…":s.ok?(s.cards.length+(s.cards.length===1?" carta":" cartas")):s.err)}
  return one("A","Fuente 1")+" · "+one("B","Fuente 2")}
 function rarBtn(label){return '<button class="pri" id="rar-b" style="width:100%;margin-top:10px">'+label+'</button>'}
+function ebayBtn(n){
+ var e=$("ebay");
+ if(n===null||!byNum[n]){e.innerHTML="";return}
+ e.innerHTML='<a class="ebtn" id="ebay-a" rel="noopener">'+ico("sr")+'Buscar '+esc(byNum[n].name)+' en eBay</a>';
+ ebaySet($("ebay-a"),byNum[n].name+" pokemon card illustration rare")}
 function rarState(n){
- rtok++;itok++;var box=$("rar");
+ rtok++;itok++;ebayBtn(n);var box=$("rar");
  if(n===null){box.innerHTML="";return}
  var c=CC[n];
  if(c){renderRar(n,c.cards,c.diag,false);return}

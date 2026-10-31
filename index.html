@@ -44,7 +44,7 @@ button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;s
 button.pri{background:var(--ac);border-color:var(--ac);color:#fff}
 .spr{width:64px;height:64px;border-radius:50%;background:var(--sp);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--tx3);overflow:hidden;flex:none}
 .spr{position:relative}.spr img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:pixelated}.spr.ld span{display:none}
-.azc{text-align:center;padding:8px 0}.azc .spr{width:150px;height:150px;margin:0 auto 10px;background:transparent;font-size:30px}
+.azc{text-align:center;padding:8px 0}.azc .spr{width:188px;height:188px;margin:0 auto 10px;background:transparent;font-size:30px}
 .azc .nm{font-size:22px;font-weight:700}.azc .bt{margin-top:16px}
 .sticky{position:sticky;top:-4px;background:var(--bg);z-index:2;padding:4px 0 6px}
 .chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px}
@@ -78,6 +78,8 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 .rcd{cursor:pointer}
 .ebtn{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px 14px;text-decoration:none;font-size:15px;margin-top:10px}.ebtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #vebay{margin-top:0;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff;padding:12px 18px}
+.r-sar{background:#ffe9d6;color:#9a4300}.r-ar{background:#dff5ea;color:#0b6b46}
+.yh{display:flex;align-items:center;gap:8px;padding:10px 2px;border-bottom:1px solid var(--bd);cursor:pointer;font-size:15px}.yh b{flex:1;font-weight:600}.yh span{color:var(--tx2);font-size:13px}.yh .ch svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}.yh.o .ch svg{transform:rotate(180deg)}.ymo{padding:4px 2px 6px}
 .rdiag{font-size:11px;color:var(--tx3);margin-top:8px}
 .empty{color:var(--tx2);text-align:center;padding:24px 0}
 #spl{position:fixed;inset:0;background:#e53935;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:99;transition:opacity .45s}#spl.h{opacity:0;pointer-events:none}#spl svg{width:150px;height:150px;border-radius:34px}#spl b{color:#fff;font-size:30px;letter-spacing:.5px}
@@ -157,7 +159,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="2.5";
+var VERSION="2.6";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -167,7 +169,7 @@ function renderProg(){
   return '<div class="rg"><b>'+r+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em style="color:'+numColor(k/a.length)+';font-weight:600">'+k+'/'+a.length+'</em></div>'}).join("");
 }
 function pickRnd(){var m=DEX.p.filter(function(p){return !isOn(p[0])});rnd=m.length?m[Math.floor(Math.random()*m.length)][0]:null}
-var RAR={"Special Illustration Rare":"r-sir","Illustration Rare":"r-ir","Hyper Rare":"r-hy"}, CC={}, rtok=0, rar=null;
+var RAR={"Special Illustration Rare":"r-sir","Illustration Rare":"r-ir","Hyper Rare":"r-hy","Special Art Rare":"r-sar","Art Rare":"r-ar"},REN=["Special Illustration Rare","Illustration Rare","Hyper Rare"],ORD=["Special Illustration Rare","Illustration Rare","Hyper Rare","Special Art Rare · JP","Art Rare · JP"], CC={}, rtok=0, rar=null;
 function ensureRar(){if(rar!==rnd&&$("v-az").classList.contains("on")){rar=rnd;rarState(rnd)}}
 var IS_ANDROID=/Android/i.test(navigator.userAgent);
 function ebayWeb(q){return "https://www.ebay.com/sch/i.php?_nkw="+encodeURIComponent(q)+"&_sacat=0"}
@@ -180,9 +182,9 @@ var vOpen=false,vtok=0;
 function openViewer(c){
  var im=$("vimg"),tok=++vtok;
  im.src=c.images.small;$("verr").textContent="";
- $("vcap").innerHTML='<span class="rb '+RAR[c.rarity]+'">'+c.rarity+'</span><br>'+esc(c.set.name)+' · '+esc(String(c.set.releaseDate||"").slice(0,4));
+ $("vcap").innerHTML='<span class="rb '+RAR[c.rarity]+'">'+lab(c)+'</span><br>'+esc(c.set.name)+' · '+esc(String(c.set.releaseDate||"").slice(0,4));
  var ve=$("vebay"),pn=(rnd!==null&&byNum[rnd])?byNum[rnd].name:"";
- if(pn){ve.innerHTML=ico("sr")+"Buscar esta carta en eBay";ebaySet(ve,pn+" "+(c.set.name||"")+" "+c.rarity);ve.style.display="flex"}else ve.style.display="none";
+ if(pn){ve.innerHTML=ico("sr")+"Buscar esta carta en eBay";ebaySet(ve,pn+" "+(c.set.name||"")+" "+c.rarity+(c.jp?" japanese":""));ve.style.display="flex"}else ve.style.display="none";
  $("viewer").classList.add("s");
  if(!vOpen){vOpen=true;try{history.pushState({v:1},"")}catch(e){}}
  var big=c.images.large;
@@ -194,7 +196,9 @@ function closeViewer(fromPop){
 }
 var itok=0, SC={}, TB="https://api.tcgdex.net/v2/en/";
 function codeErr(m){var e=new Error(m);e.code=m;return e}
-function normR(r){r=String(r||"").toLowerCase().trim();for(var k in RAR)if(k.toLowerCase()===r)return k;return null}
+function normR(r){r=String(r||"").toLowerCase().trim();for(var i=0;i<REN.length;i++)if(REN[i].toLowerCase()===r)return REN[i];return null}
+function normJ(r){var t=String(r||"").toLowerCase().trim();if(/special\s*art\s*rare|スペシャルアート|^sar$/.test(t))return "Special Art Rare";if(/(^|[^a-z])art\s*rare|アートレア|^ar$/.test(t))return "Art Rare";return null}
+function lab(c){return c.rarity+(c.jp?" · JP":"")}
 function nk(s){return String(s||"").toLowerCase().replace(/[^a-z0-9]/g,"")}
 function fetchJ(url,ms){var ac=new AbortController(),t=setTimeout(function(){ac.abort()},ms);
  return fetch(url,{signal:ac.signal}).then(function(r){clearTimeout(t);if(!r.ok)throw codeErr("error "+r.status);return r.json()},function(e){clearTimeout(t);throw codeErr(e&&e.name==="AbortError"?"tiempo agotado":"sin conexión")})}
@@ -207,31 +211,34 @@ function srcA(n){
   if(!j||!Array.isArray(j.data))throw codeErr("formato inesperado");
   return j.data.map(function(c){var r=normR(c.rarity);if(!r||!c.images||!c.images.small||!c.set)return null;
    return {rarity:r,set:{name:c.set.name,releaseDate:c.set.releaseDate},images:{small:c.images.small,large:c.images.large||c.images.small},num:String(c.number||"").replace(/^0+/,""),src:"A"}}).filter(Boolean)})}
-function srcB(n){
- var dexP=getJ(TB+"dex-ids/"+n).catch(function(){return getJ(TB+"cards?dexId=eq:"+n)});
- return Promise.all([getJ(TB+"rarities"),dexP]).then(function(res){
+function srcT(n,lang){
+ var jp=lang==="ja",norm=jp?normJ:normR,TBL="https://api.tcgdex.net/v2/"+lang+"/";
+ var dexP=getJ(TBL+"dex-ids/"+n).catch(function(){return getJ(TBL+"cards?dexId=eq:"+n)});
+ return Promise.all([getJ(TBL+"rarities"),dexP]).then(function(res){
   var names=res[0],dex=cardsOf(res[1]);
   if(!Array.isArray(names)||!dex)throw codeErr("formato inesperado");
   names=names.map(function(x){return typeof x==="string"?x:(x&&x.name)}).filter(Boolean);
-  var want=names.filter(function(x){return normR(x)});
+  var want=names.filter(function(x){return norm(x)});
   if(!want.length)throw codeErr("formato inesperado");
   var dexIds={};dex.forEach(function(c){if(c&&c.id)dexIds[c.id]=c});
-  return Promise.all(want.map(function(rn){return getJ(TB+"rarities/"+encodeURIComponent(rn)).then(function(j){return {rn:rn,list:cardsOf(j)||[]}}).catch(function(){return {rn:rn,list:[],bad:1}})})).then(function(rs){
+  return Promise.all(want.map(function(rn){return getJ(TBL+"rarities/"+encodeURIComponent(rn)).then(function(j){return {rn:rn,list:cardsOf(j)||[]}}).catch(function(){return {rn:rn,list:[],bad:1}})})).then(function(rs){
    if(rs.every(function(x){return x.bad}))throw codeErr("error de red");
-   var hits=[];rs.forEach(function(x){x.list.forEach(function(c){if(c&&dexIds[c.id])hits.push({id:c.id,rarity:normR(x.rn),image:c.image||dexIds[c.id].image,local:c.localId})})});
-   return Promise.all(hits.map(function(h){return getJ(TB+"cards/"+encodeURIComponent(h.id)).then(function(d){
-    var sid=d&&d.set&&d.set.id;
-    var sp=sid?(SC[sid]||(SC[sid]=getJ(TB+"sets/"+encodeURIComponent(sid)).catch(function(){return {}}))):Promise.resolve({});
+   var hits=[];rs.forEach(function(x){x.list.forEach(function(c){if(c&&dexIds[c.id])hits.push({id:c.id,rarity:norm(x.rn),image:c.image||dexIds[c.id].image,local:c.localId})})});
+   return Promise.all(hits.map(function(h){return getJ(TBL+"cards/"+encodeURIComponent(h.id)).then(function(d){
+    var sid=d&&d.set&&d.set.id,sk=lang+"|"+sid;
+    var sp=sid?(SC[sk]||(SC[sk]=getJ(TBL+"sets/"+encodeURIComponent(sid)).catch(function(){return {}}))):Promise.resolve({});
     return sp.then(function(sd){var img=(d&&d.image)||h.image;if(!img)return null;
-     return {rarity:h.rarity,set:{name:(d.set&&d.set.name)||(sd&&sd.name)||"",releaseDate:(sd&&sd.releaseDate)||""},images:{small:img+"/low.webp",large:img+"/high.webp"},num:String(h.local||"").replace(/^0+/,""),src:"B"}})}).catch(function(){return null})})).then(function(a){return a.filter(Boolean)})})})}
+     return {rarity:h.rarity,jp:jp,set:{name:(d.set&&d.set.name)||(sd&&sd.name)||"",releaseDate:(sd&&sd.releaseDate)||""},images:{small:img+"/low.webp",large:img+"/high.webp"},num:String(h.local||"").replace(/^0+/,""),src:jp?"J":"B"}})}).catch(function(){return null})})).then(function(a){return a.filter(Boolean)})})})}
+function srcB(n){return srcT(n,"en")}
+function srcJ(n){return srcT(n,"ja")}
 function mergeCards(a,b){
  var seen={},out=[];
- (a||[]).concat(b||[]).forEach(function(c){var k=c.num?nk(c.set.name)+"|"+c.rarity+"|"+c.num:null;if(k){if(seen[k])return;seen[k]=1}out.push(c)});
+ (a||[]).concat(b||[]).forEach(function(c){var k=c.num?nk(c.set.name)+"|"+c.rarity+"|"+c.num+(c.jp?"|jp":""):null;if(k){if(seen[k])return;seen[k]=1}out.push(c)});
  out.sort(function(x,y){return String(y.set.releaseDate||"").replace(/\//g,"-").localeCompare(String(x.set.releaseDate||"").replace(/\//g,"-"))});
  return out}
 function diagText(st){
  function one(k,nm){var s=st[k];return nm+": "+(!s?"buscando…":s.ok?(s.cards.length+(s.cards.length===1?" carta":" cartas")):s.err)}
- return one("A","Fuente 1")+" · "+one("B","Fuente 2")}
+ return one("A","Fuente 1")+" · "+one("B","Fuente 2")+" · "+one("J","Fuente 3 (JP)")}
 function rarBtn(label){return '<button class="pri" id="rar-b" style="width:100%;margin-top:10px">'+label+'</button>'}
 function ebayBtn(n){
  var e=$("ebay");
@@ -249,20 +256,21 @@ function searchRar(n){
  var tok=++rtok,box=$("rar");
  if(navigator.onLine===false){box.innerHTML='<div class="nosig"><span>Sin señal de internet</span><button id="rar-b">Reintentar</button></div>';$("rar-b").onclick=function(){searchRar(n)};return}
  box.innerHTML='<div class="mut">Buscando cartas…</div>';
- var st={A:null,B:null};
+ var st={A:null,B:null,J:null};
  function upd(){
   if(tok!==rtok)return;
-  var both=st.A&&st.B,anyOk=(st.A&&st.A.ok)||(st.B&&st.B.ok);
+  var both=st.A&&st.B&&st.J,anyOk=(st.A&&st.A.ok)||(st.B&&st.B.ok)||(st.J&&st.J.ok);
   if(both&&!anyOk){
    box.innerHTML='<div class="nosig"><span>'+(navigator.onLine===false?'Sin señal de internet':'El servidor de cartas no respondió, intenta de nuevo')+'</span></div><div class="rdiag">'+diagText(st)+'</div>'+rarBtn("Reintentar");
    $("rar-b").onclick=function(){searchRar(n)};return}
   if(!anyOk)return;
-  var cards=mergeCards(st.A&&st.A.ok?st.A.cards:[],st.B&&st.B.ok?st.B.cards:[]);
+  var cards=mergeCards(st.A&&st.A.ok?st.A.cards:[],(st.B&&st.B.ok?st.B.cards:[]).concat(st.J&&st.J.ok?st.J.cards:[]));
   var diag=diagText(st);
   if(both)CC[n]={cards:cards,diag:diag};
   renderRar(n,cards,diag,!both)}
  srcA(n).then(function(c){st.A={ok:1,cards:c}},function(e){st.A={ok:0,err:(e&&e.code)||"error"}}).then(upd);
- srcB(n).then(function(c){st.B={ok:1,cards:c}},function(e){st.B={ok:0,err:(e&&e.code)||"error"}}).then(upd)}
+ srcB(n).then(function(c){st.B={ok:1,cards:c}},function(e){st.B={ok:0,err:(e&&e.code)||"error"}}).then(upd);
+ srcJ(n).then(function(c){st.J={ok:1,cards:c}},function(e){st.J={ok:0,err:(e&&e.code)||"error"}}).then(upd)}
 function renderRar(n,list,diag,partial){
  var box=$("rar"),tok=++itok;
  var foot='<div class="rdiag">'+diag+'</div>'+(partial?'':rarBtn("Actualizar"));
@@ -271,12 +279,12 @@ function renderRar(n,list,diag,partial){
  box.innerHTML='<div class="rsum" id="rsum"></div><div class="rrow" id="rrow"></div>'+foot;bind();
  var row=$("rrow"),sum=$("rsum"),els=[],pend=list.length,ok=0;
  function draw(){
-  var cnt={};list.forEach(function(c,i){if(els[i])cnt[c.rarity]=(cnt[c.rarity]||0)+1});
-  sum.innerHTML=Object.keys(RAR).filter(function(k){return cnt[k]}).map(function(k){return '<span class="rb '+RAR[k]+'">'+k+' · '+cnt[k]+'</span>'}).join("");
+  var cnt={},cl={};list.forEach(function(c,i){if(els[i]){var l=lab(c);cnt[l]=(cnt[l]||0)+1;cl[l]=RAR[c.rarity]}});
+  sum.innerHTML=ORD.filter(function(k){return cnt[k]}).map(function(k){return '<span class="rb '+cl[k]+'">'+k+' · '+cnt[k]+'</span>'}).join("");
   row.innerHTML="";els.forEach(function(e){if(e)row.appendChild(e)})}
  list.forEach(function(c,i){var im=new Image();im.alt="";
   im.onload=function(){if(tok!==itok)return;ok++;pend--;var d=document.createElement("div");d.className="rcd";d.appendChild(im);
-   d.insertAdjacentHTML("beforeend",'<span class="rb '+RAR[c.rarity]+'">'+c.rarity+'</span><p>'+esc(c.set.name)+'<br>'+esc(String(c.set.releaseDate||"").slice(0,4))+'</p>');
+   d.insertAdjacentHTML("beforeend",'<span class="rb '+RAR[c.rarity]+'">'+lab(c)+'</span><p>'+esc(c.set.name)+'<br>'+esc(String(c.set.releaseDate||"").slice(0,4))+'</p>');
    d.onclick=function(){openViewer(c)};els[i]=d;draw()};
   im.onerror=function(){if(tok!==itok)return;pend--;if(pend===0&&ok===0){sum.innerHTML='<span class="mut">No se pudieron cargar las imágenes de las cartas.</span>'}};
   im.src=c.images.small})}
@@ -289,12 +297,18 @@ function renderAz(){
  $("az-m").onclick=function(){toggle(rnd)};
  ensureRar();
 }
+var openYears={};
 function renderMes(){
- var m={};Object.keys(S.caps).forEach(function(k){var d=S.caps[k];if(d){var key=d.slice(0,7);m[key]=(m[key]||0)+1}});
- var ks=Object.keys(m).sort().reverse().slice(0,8);
- if(!ks.length){$("mes").innerHTML='<div class="empty">Aún no hay capturas con fecha.</div>';return}
- var mx=Math.max.apply(null,ks.map(function(k){return m[k]}));
- $("mes").innerHTML=ks.map(function(k){var p=k.split("-");return '<div class="mo"><b>'+MESES[+p[1]-1].slice(0,3)+' '+p[0]+'</b><div class="bar"><i style="width:'+(m[k]/mx*100)+'%"></i></div><em>'+m[k]+'</em></div>'}).join("");
+ var by={},und=0;
+ Object.keys(S.caps).forEach(function(k){var d=S.caps[k];if(!d){und++;return}var y=d.slice(0,4),mo=+d.slice(5,7);if(!by[y])by[y]={t:0,m:{}};by[y].t++;by[y].m[mo]=(by[y].m[mo]||0)+1});
+ var ys=Object.keys(by).sort().reverse();
+ if(!ys.length&&!und){$("mes").innerHTML='<div class="empty">Aún no hay capturas con fecha.</div>';return}
+ var mx=1;ys.forEach(function(y){for(var k in by[y].m)mx=Math.max(mx,by[y].m[k])});
+ var h=ys.map(function(y){var o=openYears[y],ms=Object.keys(by[y].m).map(Number).sort(function(a,b){return b-a});
+  return '<div class="yr"><div class="yh'+(o?' o':'')+'" data-y="'+y+'"><b>'+y+'</b><span>'+by[y].t+(by[y].t===1?' captura':' capturas')+'</span><span class="ch">'+ico("chv")+'</span></div><div class="ymo" style="display:'+(o?'block':'none')+'">'+ms.map(function(m){return '<div class="mo"><b>'+MESES[m-1]+'</b><div class="bar"><i style="width:'+(by[y].m[m]/mx*100)+'%"></i></div><em>'+by[y].m[m]+'</em></div>'}).join("")+'</div></div>'}).join("");
+ if(und)h+='<div class="mo" style="margin-top:8px"><b>Sin fecha</b><div class="bar"><i style="width:0"></i></div><em>'+und+'</em></div>';
+ $("mes").innerHTML=h;
+ Array.prototype.forEach.call($("mes").querySelectorAll(".yh"),function(e){e.onclick=function(){var y=e.getAttribute("data-y"),o=!openYears[y];openYears[y]=o;e.classList.toggle("o",o);e.nextSibling.style.display=o?"block":"none"}})
 }
 function renderChips(){
  var r=$("reg");r.innerHTML=['*'].concat(regions).map(function(x){return '<option value="'+x+'">'+(x==='*'?'Todas las regiones':x)+'</option>'}).join("");
@@ -421,7 +435,7 @@ $("viewer").onclick=function(e){if(e.target===$("viewer"))closeViewer(false)};
 window.addEventListener("popstate",function(){closeViewer(true)});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeViewer(false)});
 $("t-az").innerHTML=ico("dice")+"Pokémon al azar";$("t-rar").innerHTML=ico("star")+"Cartas de máxima rareza";
-$("t-mes").innerHTML='<span class="l">'+ico("cal")+"Capturas por mes</span>"+'<span class="ch">'+ico("chv")+"</span>";
+$("t-mes").innerHTML='<span class="l">'+ico("cal")+"Historial de capturas</span>"+'<span class="ch">'+ico("chv")+"</span>";
 $("t-mes").onclick=function(){var o=$("mes").style.display==="none";$("mes").style.display=o?"block":"none";$("t-mes").classList.toggle("o",o)};$("t-res").innerHTML=ico("save")+"Respaldo";
 var TABS=[["v-dex","home","Dex"],["v-prog","chart","Progreso"],["v-az","dice","Azar"],["v-res","save","Respaldo"]];
 $("nav").innerHTML=TABS.map(function(t,i){return '<button data-v="'+t[0]+'" class="'+(i?'':'on')+'">'+ico(t[1])+t[2]+'</button>'}).join("");

@@ -67,6 +67,11 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 .r-sir{background:#fde7f3;color:#9b1c63}.r-ir{background:#e6edff;color:#1f4fc0}.r-hy{background:#fff1c9;color:#8a5a00}
 .rrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}.rcd{flex:none;width:112px}.rcd img{width:112px;height:auto;border-radius:8px;display:block}.rcd .rb{display:inline-block;margin:6px 0 3px;font-size:11px;white-space:normal}.rcd p{font-size:12px;color:var(--tx2);line-height:1.25}
 .nosig{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--sp);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--tx2)}.nosig button{padding:6px 10px;font-size:12px}
+#viewer{position:fixed;inset:0;background:rgba(0,0,0,.93);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:30;padding:calc(72px + env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom))}#viewer.s{display:flex}
+#vx{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;width:56px;height:56px;border-radius:50%;padding:0;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff}#vx svg{width:28px;height:28px}
+#vimg{max-width:94vw;max-height:68vh;width:auto;height:auto;border-radius:14px;object-fit:contain}
+#vcap{color:#fff;text-align:center;font-size:14px;line-height:1.4}#vcap .rb{display:inline-block;margin-bottom:6px}#verr{color:#ffd9d6;font-size:13px;text-align:center;min-height:18px}
+.rcd{cursor:pointer}
 .empty{color:var(--tx2);text-align:center;padding:24px 0}
 #spl{position:fixed;inset:0;background:#e53935;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:99;transition:opacity .45s}#spl.h{opacity:0;pointer-events:none}#spl svg{width:150px;height:150px;border-radius:34px}#spl b{color:#fff;font-size:30px;letter-spacing:.5px}
 </style></head><body>
@@ -96,6 +101,7 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
  <p class="mut" id="ver" style="text-align:center;margin-top:4px"></p></section>
 </main>
 <nav id="nav"></nav>
+<div id="viewer"><button id="vx" aria-label="Cerrar"></button><img id="vimg" alt=""><div id="vcap"></div><div id="verr"></div></div>
 <div class="ov" id="ov"><div class="md" id="md"></div></div><div class="toast" id="toast"></div>
 <script>/*!
 
@@ -124,7 +130,7 @@ save:'<path d="M12 4v10m0 0l-4-4m4 4l4-4M5 19h14"/>',
 dl:'<path d="M12 4v10m0 0l-4-4m4 4l4-4M5 19h14"/>',
 up:'<path d="M12 16V6m0 0l-4 4m4-4l4 4M5 19h14"/>',
 re:'<path d="M20 11a8 8 0 10-2 6M20 5v6h-6"/>',
-ck:'<path d="M5 12l5 5 9-10"/>',lk:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',lo:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.5-1.9"/>',chv:'<path d="M6 9l6 6 6-6"/>',star:'<path d="M12 3l2.5 6 6.5.5-5 4.3 1.6 6.4L12 17l-5.6 3.2L8 13.8 3 9.5 9.5 9z"/>',home:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'};
+ck:'<path d="M5 12l5 5 9-10"/>',lk:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',lo:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.5-1.9"/>',chv:'<path d="M6 9l6 6 6-6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',star:'<path d="M12 3l2.5 6 6.5.5-5 4.3 1.6 6.4L12 17l-5.6 3.2L8 13.8 3 9.5 9.5 9z"/>',home:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'};
 function ico(n){return '<svg viewBox="0 0 24 24">'+IC[n]+'</svg>'}
 function $(i){return document.getElementById(i)}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -144,7 +150,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="1.9";
+var VERSION="2.0";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -156,6 +162,20 @@ function renderProg(){
 function pickRnd(){var m=DEX.p.filter(function(p){return !isOn(p[0])});rnd=m.length?m[Math.floor(Math.random()*m.length)][0]:null}
 var RAR={"Special Illustration Rare":"r-sir","Illustration Rare":"r-ir","Hyper Rare":"r-hy"}, CC={}, rtok=0, rar=null;
 function ensureRar(){if(rnd!==null&&rar!==rnd&&$("v-az").classList.contains("on")){rar=rnd;loadRar(rnd)}}
+var vOpen=false,vtok=0;
+function openViewer(c){
+ var im=$("vimg"),tok=++vtok;
+ im.src=c.images.small;$("verr").textContent="";
+ $("vcap").innerHTML='<span class="rb '+RAR[c.rarity]+'">'+c.rarity+'</span><br>'+esc(c.set.name)+' · '+esc(String(c.set.releaseDate||"").slice(0,4));
+ $("viewer").classList.add("s");
+ if(!vOpen){vOpen=true;try{history.pushState({v:1},"")}catch(e){}}
+ var big=c.images.large;
+ if(big&&big!==c.images.small){var L=new Image();L.onload=function(){if(tok===vtok&&vOpen)im.src=big};L.onerror=function(){if(tok===vtok&&vOpen)$("verr").textContent="No se pudo cargar la imagen"};L.src=big}
+}
+function closeViewer(fromPop){
+ if(!vOpen)return;vOpen=false;vtok++;$("viewer").classList.remove("s");$("vimg").removeAttribute("src");
+ if(!fromPop){try{if(history.state&&history.state.v)history.back()}catch(e){}}
+}
 function loadRar(n){
  var box=$("rar"), tok=++rtok;
  function nosig(){if(tok!==rtok)return;box.innerHTML='<div class="nosig"><span>Sin señal de internet</span><button id="rar-r">Reintentar</button></div>';$("rar-r").onclick=function(){loadRar(n)}}
@@ -170,7 +190,7 @@ function loadRar(n){
    row.innerHTML="";els.forEach(function(e){if(e)row.appendChild(e)})}
   list.forEach(function(c,i){var im=new Image();im.alt="";
    im.onload=function(){if(tok!==rtok)return;ok++;pend--;var d=document.createElement("div");d.className="rcd";d.appendChild(im);
-    d.insertAdjacentHTML("beforeend",'<span class="rb '+RAR[c.rarity]+'">'+c.rarity+'</span><p>'+esc(c.set.name)+'<br>'+esc(String(c.set.releaseDate||"").slice(0,4))+'</p>');els[i]=d;draw()};
+    d.insertAdjacentHTML("beforeend",'<span class="rb '+RAR[c.rarity]+'">'+c.rarity+'</span><p>'+esc(c.set.name)+'<br>'+esc(String(c.set.releaseDate||"").slice(0,4))+'</p>');d.onclick=function(){openViewer(c)};els[i]=d;draw()};
    im.onerror=function(){if(tok!==rtok)return;pend--;if(pend===0&&ok===0)nosig()};
    im.src=c.images.small})}
  if(CC[n]){show(CC[n]);return}
@@ -307,7 +327,11 @@ $("file").onchange=async function(){
  if(i!==1)return;S.caps=caps;save();rnd=null;renderAll();toast("Importado: "+k+" capturados")};
 $("q").oninput=function(){lim=PAGE;renderGrid()};$("f").onchange=function(){lim=PAGE;renderGrid()};
 
-$("t-prog").innerHTML=ico("chart")+"Mi progreso";$("t-az").innerHTML=ico("dice")+"Pokémon al azar";$("t-rar").innerHTML=ico("star")+"Cartas de máxima rareza";
+$("t-prog").innerHTML=ico("chart")+"Mi progreso";$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};
+$("viewer").onclick=function(e){if(e.target===$("viewer"))closeViewer(false)};
+window.addEventListener("popstate",function(){closeViewer(true)});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeViewer(false)});
+$("t-az").innerHTML=ico("dice")+"Pokémon al azar";$("t-rar").innerHTML=ico("star")+"Cartas de máxima rareza";
 $("t-mes").innerHTML='<span class="l">'+ico("cal")+"Capturas por mes</span>"+'<span class="ch">'+ico("chv")+"</span>";
 $("t-mes").onclick=function(){var o=$("mes").style.display==="none";$("mes").style.display=o?"block":"none";$("t-mes").classList.toggle("o",o)};$("t-res").innerHTML=ico("save")+"Respaldo";
 var TABS=[["v-dex","home","Dex"],["v-prog","chart","Progreso"],["v-az","dice","Azar"],["v-res","save","Respaldo"]];

@@ -165,7 +165,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="2.10";
+var VERSION="3.0";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;

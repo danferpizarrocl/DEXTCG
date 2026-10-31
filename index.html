@@ -91,6 +91,7 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 <main>
 <section class="view on" id="v-dex">
  <div class="sticky"><div class="tools"><select id="reg" aria-label="Región"></select><select id="f"><option value="all">Todos</option><option value="on">Capturados</option><option value="off">Faltan</option></select></div>
+ <select id="yr" aria-label="Año de captura" style="display:none;width:100%;margin-top:8px"></select>
  <input type="search" id="q" placeholder="Buscar nombre o número" style="display:block;width:100%;margin-top:8px"></div>
  <div class="capc" id="info"></div>
  <div class="g" id="g"></div>
@@ -160,7 +161,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="2.7";
+var VERSION="2.8";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -327,7 +328,17 @@ function renderChips(){
  r.value=curReg;
  r.onchange=function(){curReg=r.value;$("q").value="";resetList()};
 }
-var PAGE=60, lim=PAGE, curList=[], io=null;
+var PAGE=60, lim=PAGE, curList=[], io=null, yr="*";
+function yearOf(n){var d=S.caps[n];return d?String(d).slice(0,4):"none"}
+function syncYears(f){
+ var sel=$("yr");
+ if(f!=="on"){sel.style.display="none";yr="*";return}
+ var base=curReg==="*"?DEX.p.map(function(p){return p[0]}):byReg[curReg],cnt={};
+ base.forEach(function(n){if(isOn(n)){var y=yearOf(n);cnt[y]=(cnt[y]||0)+1}});
+ var ys=Object.keys(cnt).filter(function(y){return y!=="none"}).sort().reverse();
+ sel.innerHTML='<option value="*">Todos los años</option>'+ys.map(function(y){return '<option value="'+y+'">'+y+' ('+cnt[y]+')</option>'}).join("")+(cnt.none?'<option value="none">Sin fecha ('+cnt.none+')</option>':'');
+ if(yr!=="*"&&!cnt[yr])yr="*";
+ sel.value=yr;sel.style.display="block"}
 function cardHtml(n){var p=byNum[n],on=isOn(n);
  return '<div class="c '+(on?'on':'off')+'" data-n="'+n+'">'+spr(n)+'<div class="nu">N.º '+n+'</div><div class="nm">'+esc(p.name)+'</div><div class="st">'+(on?'Capturado · '+fmt(S.caps[n]):'Falta')+'</div></div>'}
 function bindCards(root){Array.prototype.forEach.call(root.querySelectorAll(".c:not([data-b])"),function(e){e.setAttribute("data-b","1");e.onclick=function(){toggle(+e.getAttribute("data-n"))}})}
@@ -347,7 +358,9 @@ function renderGrid(){
  if(q){list=DEX.p.filter(function(p){return p[1].toLowerCase().indexOf(q)>-1||String(p[0])===q}).map(function(p){return p[0]})}
  else if(all)list=DEX.p.map(function(p){return p[0]});
  else list=byReg[curReg].slice();
+ syncYears(f);
  if(f==="on")list=list.filter(isOn);if(f==="off")list=list.filter(function(n){return !isOn(n)});
+ if(f==="on"&&yr!=="*")list=list.filter(function(n){return yearOf(n)===yr});
  curList=list;var total=list.length, shown=list.slice(0,lim);
  var base=q?null:(all?DEX.p.map(function(p){return p[0]}):byReg[curReg]);
  var capN=q?0:base.filter(isOn).length,col=q?"":(all?"var(--ac)":numColor(capN/base.length));
@@ -440,7 +453,7 @@ $("file").onchange=async function(){
  var k=Object.keys(caps).length;
  var i=await modal('<h3>Importar respaldo</h3><p>El archivo trae <b>'+k+'</b> capturados. Tus capturas actuales ('+Object.keys(S.caps).length+') se reemplazarán por estas.</p>',[{t:"Cancelar"},{t:"Reemplazar",pri:1}]);
  if(i!==1)return;S.caps=caps;save();rnd=null;renderAll();toast("Importado: "+k+" capturados")};
-$("q").oninput=resetList;$("f").onchange=resetList;
+$("q").oninput=resetList;$("f").onchange=resetList;$("yr").onchange=function(){yr=$("yr").value;resetList()};
 
 $("t-prog").innerHTML=ico("chart")+"Mi progreso";$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};
 $("viewer").onclick=function(e){if(e.target===$("viewer"))closeViewer(false)};

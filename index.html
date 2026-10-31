@@ -22,6 +22,8 @@ header .hr{display:flex;align-items:center;gap:10px}.hcard{display:flex;flex-dir
 #theme{width:40px;height:40px;padding:0;border-radius:50%}#theme svg{width:20px;height:20px}
 #lock{width:56px;height:56px;padding:0;border-radius:50%}#lock svg{width:28px;height:28px}#lock.ed{background:#e53935;border-color:#e53935;color:#fff}
 #edbar{display:none;flex:none;background:#e53935;color:#fff;padding:8px 16px;align-items:center;justify-content:space-between;font-size:14px;font-weight:600}#edbar.s{display:flex}#edbar button{background:#fff;color:#e53935;border:0;padding:8px 12px;font-weight:700}
+.hinfo{flex:1;min-width:0;padding:0 8px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tx2)}.hinfo .l1{font-size:12px}.hinfo .l1 b{font-size:22px;font-weight:700;margin-right:2px}.hinfo .l2{font-size:12px;margin-top:1px}.hinfo .l2 b{font-size:13px;font-weight:700}
+@media(max-width:340px){header{padding-left:12px;padding-right:12px}header h1{font-size:17px}.hinfo{padding:0 4px}.hinfo .l1,.hinfo .l2{font-size:11px}.hinfo .l1 b{font-size:18px}.hinfo .l2 b{font-size:12px}#theme{width:34px;height:34px}#lock{width:48px;height:48px}}
 .capc{display:flex;align-items:baseline;gap:6px;white-space:nowrap;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 12px;margin:8px 0 0;font-size:14px;color:var(--tx2)}.capc b{font-size:26px;font-weight:700;line-height:1}
 @media(max-width:340px){.capc{font-size:12px;gap:4px;padding:10px}.capc b{font-size:21px}}.cap{font-size:20px;font-weight:700;margin:8px 2px 0}.cap small{font-size:14px;font-weight:400;color:var(--tx2)}
 .tg{cursor:pointer;justify-content:space-between;margin-bottom:0}.tg .l{display:flex;align-items:center;gap:7px}.tg .ch{transition:transform .2s}.tg.o .ch{transform:rotate(180deg)}.tg.o{margin-bottom:12px}
@@ -86,14 +88,13 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 #spl{position:fixed;inset:0;background:#e53935;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:99;transition:opacity .45s}#spl.h{opacity:0;pointer-events:none}#spl svg{width:150px;height:150px;border-radius:34px}#spl b{color:#fff;font-size:30px;letter-spacing:.5px}
 </style></head><body>
 <div id="spl"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#1d1d22"/><g transform="rotate(-8 256 256)"><rect x="150" y="100" width="212" height="300" rx="26" fill="#e53935"/><rect x="170" y="122" width="172" height="172" rx="14" fill="#ffe3e1"/><polygon points="256.0,142.0 271.9,184.2 316.9,186.2 281.7,214.3 293.6,257.8 256.0,233.0 218.4,257.8 230.3,214.3 195.1,186.2 240.1,184.2" fill="#c62828"/><rect x="170" y="316" width="112" height="14" rx="7" fill="#ffffff" opacity=".75"/><rect x="170" y="344" width="74" height="14" rx="7" fill="#ffffff" opacity=".75"/></g></svg><b>DexTCG</b><i id="sv" style="color:#fff;opacity:.85;font-style:normal;font-size:13px"></i></div>
-<header><h1>Dex TCG</h1><div class="hr"><button id="theme" aria-label="Modo claro o nocturno"></button><button id="lock" aria-label="Candado de edición"></button></div></header>
+<header><h1>DexTCG</h1><div id="info" class="hinfo"></div><div class="hr"><button id="theme" aria-label="Modo claro o nocturno"></button><button id="lock" aria-label="Candado de edición"></button></div></header>
 <div id="edbar"><span>Modo edición</span><button id="edend">Terminar edición</button></div>
 <main>
 <section class="view on" id="v-dex">
  <div class="sticky"><div class="tools"><select id="reg" aria-label="Región"></select><select id="f"><option value="all">Todos</option><option value="on">Capturados</option><option value="off">Faltan</option></select></div>
  <select id="yr" aria-label="Año de captura" style="display:none;width:100%;margin-top:8px"></select>
  <input type="search" id="q" placeholder="Buscar nombre o número" style="display:block;width:100%;margin-top:8px"></div>
- <div class="capc" id="info"></div>
  <div class="g" id="g"></div>
 </section>
 <section class="view" id="v-prog">
@@ -161,7 +162,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="2.8";
+var VERSION="2.9";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -365,7 +366,7 @@ function renderGrid(){
  var base=q?null:(all?DEX.p.map(function(p){return p[0]}):byReg[curReg]);
  var capN=q?0:base.filter(isOn).length,col=q?"":(all?"var(--ac)":numColor(capN/base.length));
  $("info").style.color=col;
- $("info").innerHTML=q?('<span>'+total+' resultado'+(total===1?'':'s')+'</span>'):('<span>Capturados</span><b>'+capN+'</b><span>de '+nf(base.length)+'</span><b style="margin-left:auto">'+(capN/base.length*100).toFixed(1).replace(".",",")+' %</b>');
+ $("info").innerHTML=q?('<div class="l1"><b>'+total+'</b> resultado'+(total===1?'':'s')+'</div>'):('<div class="l1"><b>'+capN+'</b> de '+nf(base.length)+'</div><div class="l2">Capturados · <b>'+(capN/base.length*100).toFixed(1).replace(".",",")+' %</b></div>');
  if(!total){$("g").innerHTML='<div class="empty" style="grid-column:1/-1">Sin resultados.</div>';watch();return}
  var h=shown.map(cardHtml).join("");
  if(total>shown.length)h+='<div id="sent" style="grid-column:1/-1;height:40px;text-align:center"></div>';

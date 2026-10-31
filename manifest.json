@@ -1,0 +1,17 @@
+{
+  "name": "DexTCG",
+  "short_name": "DexTCG",
+  "description": "Pokédex en cartas: lleva el control de tu colección.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#e53935",
+  "theme_color": "#e53935",
+  "lang": "es",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

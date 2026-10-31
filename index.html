@@ -46,7 +46,7 @@ button.pri{background:var(--ac);border-color:var(--ac);color:#fff}
 .chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px}
 .chip{flex:none;font-size:14px;padding:8px 14px;border-radius:99px;border:1px solid var(--bd);background:var(--card);cursor:pointer}
 .chip.a{background:var(--acbg);border-color:var(--ac);color:var(--ac);font-weight:600}
-.tools{display:flex;gap:8px}
+.tools{display:flex;gap:8px}#reg{flex:1;min-width:0}
 input[type=search]{flex:1;min-width:0;font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:11px 12px}
 select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:11px 8px}
 .g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
@@ -71,8 +71,8 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 <div id="edbar"><span>Modo edición</span><button id="edend">Terminar edición</button></div>
 <main>
 <section class="view on" id="v-dex">
- <div class="sticky"><div class="chips" id="chips"></div>
- <div class="tools"><input type="search" id="q" placeholder="Buscar nombre o número"><select id="f"><option value="all">Todos</option><option value="on">Capturados</option><option value="off">Faltan</option></select></div></div>
+ <div class="sticky"><div class="tools"><select id="reg" aria-label="Región"></select><select id="f"><option value="all">Todos</option><option value="on">Capturados</option><option value="off">Faltan</option></select></div>
+ <input type="search" id="q" placeholder="Buscar nombre o número" style="display:block;width:100%;margin-top:8px"></div>
  <div class="cap" id="info"></div>
  <div class="g" id="g"></div>
 </section>
@@ -139,7 +139,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="1.4";
+var VERSION="1.5";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
@@ -165,8 +165,9 @@ function renderMes(){
  $("mes").innerHTML=ks.map(function(k){var p=k.split("-");return '<div class="mo"><b>'+MESES[+p[1]-1].slice(0,3)+' '+p[0]+'</b><div class="bar"><i style="width:'+(m[k]/mx*100)+'%"></i></div><em>'+m[k]+'</em></div>'}).join("");
 }
 function renderChips(){
- $("chips").innerHTML=['*'].concat(regions).map(function(r){return '<span class="chip'+(r===curReg?' a':'')+'" data-r="'+r+'">'+(r==='*'?'Todas':r)+'</span>'}).join("");
- Array.prototype.forEach.call($("chips").children,function(e){e.onclick=function(){curReg=e.getAttribute("data-r");$("q").value="";lim=PAGE;renderChips();renderGrid()}});
+ var r=$("reg");r.innerHTML=['*'].concat(regions).map(function(x){return '<option value="'+x+'">'+(x==='*'?'Todas las regiones':x)+'</option>'}).join("");
+ r.value=curReg;
+ r.onchange=function(){curReg=r.value;$("q").value="";lim=PAGE;renderGrid()};
 }
 var PAGE=160, lim=PAGE;
 function renderGrid(){
@@ -177,7 +178,7 @@ function renderGrid(){
  if(f==="on")list=list.filter(isOn);if(f==="off")list=list.filter(function(n){return !isOn(n)});
  var total=list.length, shown=list.slice(0,lim);
  var base=q?null:(all?DEX.p.map(function(p){return p[0]}):byReg[curReg]);
- $("info").innerHTML=q?(total+' resultado'+(total===1?'':'s')):('Capturados '+base.filter(isOn).length+' <small>de '+nf(base.length)+'</small>');
+ $("info").innerHTML=q?(total+' resultado'+(total===1?'':'s')):(base.filter(isOn).length+' <small>de '+nf(base.length)+'</small>');
  if(!total){$("g").innerHTML='<div class="empty" style="grid-column:1/-1">Sin resultados.</div>';return}
  var h="", last=null, group=false;
  shown.forEach(function(n){var p=byNum[n],on=isOn(n);

@@ -54,6 +54,7 @@ nav button.on{color:var(--ac);font-weight:600}
 .bar{height:9px;background:var(--sp);border-radius:5px;overflow:hidden;flex:1}.bar i{display:block;height:100%;background:var(--ac);border-radius:5px}
 .rg{display:flex;align-items:center;gap:8px;font-size:14px;margin:9px 0}.rg b{width:80px;font-weight:400;display:flex;align-items:center;gap:5px}.rg b svg{width:16px;height:19px;flex:none}
 .mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px;text-align:center}.mg svg{width:46px;height:54px}.mg p{margin:2px 0 0;font-size:12px;color:var(--tx2)}.mg .w p{color:var(--tx2);opacity:.7}.msub{margin:0 0 10px;font-size:13px;color:var(--tx2)}
+.pgp{display:inline-flex;align-items:center;gap:5px;font-weight:700;margin-left:2px}.pgp svg{width:15px;height:18px;stroke:none;fill:none;flex:none}
 .dd{display:flex;align-items:center;justify-content:center;gap:12px;font-size:20px;font-weight:700;color:#c98a00}.dd svg{width:38px;height:45px;flex:none}.rg em{width:60px;text-align:right;font-style:normal;color:var(--tx2);font-size:13px}
 button{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px}
 button:active{transform:scale(.98)}
@@ -123,7 +124,6 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 <section class="view" id="v-prog">
  <div class="card dd" id="dexdone" style="display:none"></div>
  <div class="card"><div class="t" id="t-prog"></div>
- <div class="row"><span class="big" id="cnt">0</span><span class="mut" id="cnt2"></span></div>
  <div style="display:flex;margin:10px 0 4px"><div class="bar"><i id="pb"></i></div></div>
  <div id="regs"></div></div>
  <div class="card"><div class="t tg o" id="t-log"></div><div id="log"></div></div>
@@ -191,7 +191,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="3.8";
+var VERSION="3.9";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"]];
 var STAR='<polygon points="24,25 26.35,30.76 32.56,31.22 27.8,35.24 29.29,41.28 24,38 18.71,41.28 20.2,35.24 15.44,31.22 21.65,30.76" fill="#854F0B"/>';
@@ -219,8 +219,8 @@ function renderLog(){var c=Object.keys(S.caps).length,nx=null;
  $("log").innerHTML='<p class="msub">'+(nx?"Próxima: "+nf(nx[0])+" · faltan "+nf(nx[0]-c):"Conseguiste todas las medallas")+'</p><div class="mg">'+MED.map(function(m){var on=c>=m[0];return '<div class="'+(on?'':'w')+'">'+numMedal(m,on)+'<p>'+m[1]+'</p></div>'}).join("")+'</div>'}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
- $("cnt").textContent=nf(c);$("cnt2").textContent="de "+nf(tot)+" capturados · "+(c/tot*100).toFixed(1).replace(".",",")+" %";
- $("pb").style.width=(c/tot*100)+"%";var pcol=numColor(c/tot);$("pb").style.background=pcol;$("cnt").style.color=pcol;$("cnt2").style.color=pcol;
+ var pct=(c/tot*100).toFixed(1).replace(".",",")+" %";
+ $("pb").style.width=(c/tot*100)+"%";var pcol=numColor(c/tot);$("pb").style.background=pcol;$("pgp").style.color=pcol;$("pgp").innerHTML=pct+(c>=tot&&tot>0?goldMedal():"");
  $("dexdone").style.display=dexDone()?"flex":"none";$("dexdone").innerHTML=dexDone()?goldMedal()+"Dex completada":"";renderLog();
  $("regs").innerHTML=regions.map(function(r){var a=byReg[r],k=a.filter(isOn).length;
   return '<div class="rg"><b>'+r+(k===a.length&&a.length?goldMedal():'')+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em style="color:'+numColor(k/a.length)+';font-weight:600">'+k+'/'+a.length+'</em></div>'}).join("");
@@ -532,7 +532,7 @@ $("file").onchange=async function(){
  if(i!==1)return;S.caps=caps;save();rnd=null;renderAll();checkMedals(true);toast("Importado: "+k+" capturados")};
 $("q").oninput=resetList;$("f").onchange=resetList;$("yr").onchange=function(){yr=$("yr").value;resetList()};
 
-$("t-prog").innerHTML=ico("chart")+"Mi progreso";$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};
+$("t-prog").innerHTML=ico("chart")+"Mi progreso"+'<span id="pgp" class="pgp"></span>';$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};
 $("viewer").onclick=function(e){if(e.target===$("viewer"))closeViewer(false)};
 window.addEventListener("popstate",function(){if(skipPops>0){skipPops--;return}if(vOpen)closeViewer(true);else if(shOpen)closeSheet(true)});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(vOpen)closeViewer(false);else closeSheet(false)}});

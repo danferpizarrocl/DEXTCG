@@ -52,8 +52,9 @@ nav button.on{color:var(--ac);font-weight:600}
 .big{font-size:34px;font-weight:700}.mut{color:var(--tx2);font-size:13px}
 .row{display:flex;justify-content:space-between;align-items:baseline}
 .bar{height:9px;background:var(--sp);border-radius:5px;overflow:hidden;flex:1}.bar i{display:block;height:100%;background:var(--ac);border-radius:5px}
-.rg{display:flex;align-items:center;gap:8px;font-size:14px;margin:9px 0}.rg b{width:80px;font-weight:400;display:flex;align-items:center;gap:5px}.rg b svg{width:16px;height:19px;flex:none}
-.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px;text-align:center}.mg svg{width:46px;height:54px}.mg p{margin:2px 0 0;font-size:12px;color:var(--tx2)}.mg .w p{color:var(--tx2);opacity:.7}.msub{margin:0 0 10px;font-size:13px;color:var(--tx2)}
+.rg{display:flex;align-items:center;gap:8px;font-size:14px;margin:9px 0}.rg b{width:112px;font-weight:400;display:flex;align-items:center;gap:6px}.rg b svg{width:16px;height:19px;flex:none}.rg b svg.ri{width:17px;height:17px;stroke:var(--tx);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px;text-align:center}.mg svg{width:46px;height:54px}.mg p{margin:2px 0 0;font-size:12px;color:var(--tx2)}.mg .w p{color:var(--tx2);opacity:.7}.msub{margin:0 0 10px;font-size:13px;color:var(--tx2)}.mg .md{font-size:11px;margin-top:0}.mg svg.rm{width:56px;height:56px}.hn{text-align:center;margin-bottom:14px}.hn svg{width:84px;height:98px}.hn p{margin:2px 0 0;font-size:12px;color:var(--tx2)}.hn p.hh{font-size:14px;color:var(--tx);font-weight:600}
+.mo.k{cursor:pointer}.mo .ch svg{width:14px;height:14px;stroke:var(--tx2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s;flex:none}.mo.o .ch svg{transform:rotate(180deg)}.ml{display:flex;gap:8px;font-size:13px;padding:5px 2px 5px 10px;border-bottom:1px solid var(--bd)}.ml span:first-child{width:52px;color:var(--tx2)}.ml span:nth-child(2){flex:1;min-width:0}.ml span:last-child{color:var(--tx2)}
 .pgp{display:inline-flex;align-items:center;gap:5px;font-weight:700;margin-left:2px}.pgp svg{width:15px;height:18px;stroke:none;fill:none;flex:none}
 .dd{display:flex;align-items:center;justify-content:center;gap:12px;font-size:20px;font-weight:700;color:#c98a00}.dd svg{width:38px;height:45px;flex:none}.rg em{width:60px;text-align:right;font-style:normal;color:var(--tx2);font-size:13px}
 button{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px}
@@ -191,9 +192,10 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="3.9";
+var VERSION="4.0";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
-var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"]];
+var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"],[1250,"Leyenda","#D4537E","#993556","#F4C0D1","#4B1528"],[1500,"Campeón","#378ADD","#185FA5","#B5D4F4","#042C53"],[1750,"Élite","#E24B4A","#A32D2D","#F7C1C1","#501313"],[2000,"Gran Maestro","#5F5E5A","#FAC775","#2C2C2A","#FAC775"]];
+function medV(){var t=DEX.p.length;return MED.filter(function(m){return m[0]<=t})}
 var STAR='<polygon points="24,25 26.35,30.76 32.56,31.22 27.8,35.24 29.29,41.28 24,38 18.71,41.28 20.2,35.24 15.44,31.22 21.65,30.76" fill="#854F0B"/>';
 function goldMedal(){return '<svg viewBox="0 0 48 56" role="img" aria-label="Medalla dorada"><path d="M14 0h8l4 18h-9z" fill="#BA7517"/><path d="M34 0h-8l-4 18h9z" fill="#854F0B"/><circle cx="24" cy="34" r="18" fill="#FAC775" stroke="#854F0B" stroke-width="3"/>'+STAR+'</svg>'}
 function numMedal(m,on){var t=m[0]>=1000?12:14;
@@ -201,7 +203,7 @@ function numMedal(m,on){var t=m[0]>=1000?12:14;
  return '<svg viewBox="0 0 48 56" role="img" aria-label="Medalla de '+m[0]+' ganada"><path d="M14 0h8l4 18h-9z" fill="'+m[2]+'"/><path d="M34 0h-8l-4 18h9z" fill="'+m[3]+'"/><circle cx="24" cy="34" r="18" fill="'+m[4]+'" stroke="'+m[3]+'" stroke-width="2"/><circle cx="24" cy="34" r="13" fill="none" stroke="'+m[3]+'" stroke-opacity=".5"/><text x="24" y="'+(t==12?38:39)+'" text-anchor="middle" font-size="'+t+'" font-weight="500" fill="'+m[5]+'">'+m[0]+'</text></svg>'}
 function dexDone(){var t=DEX.p.length;return t>0&&Object.keys(S.caps).length>=t}
 function earnedKeys(){var c=Object.keys(S.caps).length,k=[];
- MED.forEach(function(m){if(c>=m[0])k.push("n"+m[0])});
+ medV().forEach(function(m){if(c>=m[0])k.push("n"+m[0])});
  regions.forEach(function(r){var a=byReg[r];if(a.length&&a.every(isOn))k.push("r:"+r)});
  if(dexDone())k.push("dex");return k}
 var MEDKEY="dextcg_medals";
@@ -214,16 +216,32 @@ function checkMedals(silent){var cur=earnedKeys(),st=null;
  if(silent)return;
  if(nuevos.length>1){toast("¡Ganaste "+nuevos.length+" medallas nuevas!");return}
  var k=nuevos[0];toast(k==="dex"?"¡Dex completada!":k.indexOf("r:")===0?"¡Medalla de región: "+k.slice(2)+"!":"¡Medalla de "+nf(+k.slice(1))+" capturados!")}
-function renderLog(){var c=Object.keys(S.caps).length,nx=null;
- MED.forEach(function(m){if(!nx&&c<m[0])nx=m});
- $("log").innerHTML='<p class="msub">'+(nx?"Próxima: "+nf(nx[0])+" · faltan "+nf(nx[0]-c):"Conseguiste todas las medallas")+'</p><div class="mg">'+MED.map(function(m){var on=c>=m[0];return '<div class="'+(on?'':'w')+'">'+numMedal(m,on)+'<p>'+m[1]+'</p></div>'}).join("")+'</div>'}
+var RI={"Kanto":"M4 20V10h5v10M9 20V4h6v16M15 20v-7h5v7M3 20h18M11 8h2M11 12h2M11 16h2","Johto":"M12 2v3M9 8l3-3 3 3M7 12l5-4 5 4M5 17l7-5 7 5M7 17v4M17 17v4M12 17v4","Hoenn":"M3 9c2-3 4-3 6 0s4 3 6 0 4-3 6 0M3 15c2-3 4-3 6 0s4 3 6 0 4-3 6 0","Sinnoh":"M3 20l6-12 4 7 2-3 6 8zM7.5 12.5l1.5 1.5 1.5-1.5","Unova":"M5 21V13h3.5V9H11V6h2v3h2.5v4H19v8zM12 6V2M10.5 13h3M10.5 16.5h3","Kalos":"M12 2v4M10 6h4M9.5 10h5M8 21l2.5-11h3L16 21M7 21h10M9 16h6","Alola":"M12 21v-9M12 12c-1-3-4-4-7-3 2 0 4 1 5 3M12 12c1-3 4-4 7-3-2 0-4 1-5 3M12 12c0-3-1-5-3-6M12 12c0-3 1-5 3-6M5 21h14","Galar":"M3 21V6h1.7v1.5h1.6V6H8v15M16 21V6h1.7v1.5h1.6V6H21v15M8 21V11h8v10M10.5 21v-4a1.5 1.5 0 013 0v4M12 11V2M12 2l3.5 1.4L12 4.8M5.5 11v2M18.5 11v2M2 21h20","Paldea":"M2 9l10-5 10 5-10 5zM6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5M22 9v6"};
+var RM={"Kanto":'<path d="M3 21V12h5V4h7v6h6v11z"/><path d="M10.5 7.5h2M10.5 11h2M10.5 14.5h2M5 15.5h1.5M17 14h2"/>',"Johto":'<path d="M12 1V3.5"/><path d="M10 7.5v3.5h4V7.5z"/><path d="M9 12.5v3.5h6v-3.5z"/><path d="M7 18v3h10v-3z"/><path d="M7.5 7.5c2 0 3.5-1.5 4.5-4 1 2.5 2.5 4 4.5 4z"/><path d="M5.5 12.5c2.5 0 4.5-2 6.5-5 2 3 4 5 6.5 5z"/><path d="M3 18c3.5 0 6.5-2.5 9-6 2.5 3.5 5.5 6 9 6z"/>',"Hoenn":'<path d="M2 11c2-3 4-3 6 0s4 3 6 0 4-3 8 0v10H2z"/><path d="M2 16c2-2 4-2 6 0s4 2 6 0 4-2 8 0"/>',"Sinnoh":'<path d="M2 21L9 6l4 7 3-4 6 12z"/><path d="M9 6l-2.7 5.8 2 1 .9-1.3 1.2 1.5 1.3-1.4 1.1 1.2z" fill="#fff"/>',"Unova":'<path d="M5 21V13h3.5V9H11V6h2v3h2.5v4H19v8z"/><path d="M12 6V2M10.5 13h3M10.5 16.5h3"/>',"Kalos":'<path d="M12 2l1.2 6 .8 6 3 7h-3l-1-3h-2l-1 3H7l3-7 .8-6z"/><path d="M10.3 12h3.4M9.5 16.5h5"/>',"Alola":'<path d="M11 21l.8-9h.4l.8 9z"/><path d="M12 12C9 8 5 8 3 10c3-.6 6 0 9 2z"/><path d="M12 12c3-4 7-4 9-2-3-.6-6 0-9 2z"/><path d="M12 12C11 8 9 5 6 4c3 1.3 4 4.5 6 8z"/><path d="M12 12c1-4 3-7 6-8-3 1.3-4 4.5-6 8z"/><path d="M3 21h18"/>',"Galar":'<path d="M3 21V6h1.7v1.5h1.6V6H8v5h8V6h1.7v1.5h1.6V6H21v15z"/><path d="M12 11V2"/><path d="M12 2l3.5 1.4L12 4.8z"/><path d="M10.5 21v-4a1.5 1.5 0 013 0v4"/>',"Paldea":'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11.7V16c0 3 12 3 12 0v-4.3L12 14.7z"/><path d="M22 9v6"/>'};
+var RN={"Kanto":"Pionero de Kanto","Johto":"Guardián de Johto","Hoenn":"Navegante de Hoenn","Sinnoh":"Montañista de Sinnoh","Unova":"Urbanista de Unova","Kalos":"Estrella de Kalos","Alola":"Isleño de Alola","Galar":"Campeón de Galar","Paldea":"Estudiante de Paldea"};
+function riIcon(r){return RI[r]?'<svg class="ri" viewBox="0 0 24 24" aria-hidden="true"><path d="'+RI[r]+'"/></svg>':""}
+function regMedal(r,on){var st=on?'fill="#FAC775" stroke="#854F0B" stroke-width="1.1"':'fill="#F1EFE8" stroke="#B4B2A9" stroke-width="1.1" stroke-dasharray="2 1.6"';
+ return '<svg class="rm" viewBox="0 0 24 24" '+st+' stroke-linejoin="round" stroke-linecap="round" role="img" aria-label="'+(RN[r]||r)+(on?"":" pendiente")+'">'+(RM[r]||'<circle cx="12" cy="12" r="9"/>')+'</svg>'}
+function allDates(){return Object.keys(S.caps).map(function(k){return S.caps[k]}).filter(Boolean).sort()}
+function regDate(r){var a=byReg[r];if(!a.length||!a.every(isOn))return null;var d=a.map(function(n){return S.caps[n]}).filter(Boolean).sort();return d.length?d[d.length-1]:null}
+function honorMedal(k,tot,done){var gold=done,ribA=gold?"#BA7517":"#B4B2A9",ribB=gold?"#854F0B":"#B4B2A9";
+ var dots="";for(var i=0;i<tot;i++){var a=(-90+i*360/tot)*Math.PI/180,x=(24+14.3*Math.cos(a)).toFixed(1),y=(34+14.3*Math.sin(a)).toFixed(1),lit=i<k;
+  dots+='<circle cx="'+x+'" cy="'+y+'" r="1.6" fill="'+(lit?(gold?"#854F0B":"#BA7517"):"#D3D1C7")+'"'+(lit&&!gold?' stroke="#854F0B" stroke-width=".6"':'')+'/>'}
+ return '<svg viewBox="0 0 48 56" role="img" aria-label="Medalla de honor: '+k+' de '+tot+' regiones"><path d="M14 0h8l4 18h-9z" fill="'+ribA+'"/><path d="M34 0h-8l-4 18h9z" fill="'+ribB+'"/><circle cx="24" cy="34" r="19" '+(gold?'fill="#FAC775" stroke="#854F0B" stroke-width="2"':'fill="#F1EFE8" stroke="#B4B2A9" stroke-width="2" stroke-dasharray="3 3"')+'/><circle cx="24" cy="34" r="11.5" fill="none" stroke="'+(gold?"#854F0B":"#B4B2A9")+'" stroke-width="1" stroke-opacity=".5"/>'+dots+'<polygon points="24,27 25.6,31.4 30.3,31.6 26.6,34.5 27.9,39 24,36.4 20.1,39 21.4,34.5 17.7,31.6 22.4,31.4" fill="'+(gold?"#854F0B":"#D3D1C7")+'"/></svg>'}
+function renderLog(){var c=Object.keys(S.caps).length,nx=null,mv=medV(),ds=allDates(),tot=DEX.p.length;
+ mv.forEach(function(m){if(!nx&&c<m[0])nx=m});
+ var kr=regions.filter(function(r){return byReg[r].every(isOn)}).length,done=dexDone();
+ var h='<div class="hn">'+honorMedal(kr,regions.length,done)+'<p class="hh">Medalla de honor</p><p>'+(done?"Dex completada"+(ds.length?" · "+fmt(ds[ds.length-1]):""):kr+" de "+regions.length+" regiones")+'</p></div>';
+ h+='<p class="msub">'+(nx?"Próxima: "+nf(nx[0])+" · faltan "+nf(nx[0]-c):"Conseguiste todas las medallas")+'</p><div class="mg">'+mv.map(function(m){var on=c>=m[0],d=on&&ds.length>=m[0]?ds[m[0]-1]:null;return '<div class="'+(on?'':'w')+'">'+numMedal(m,on)+'<p>'+m[1]+'</p>'+(d?'<p class="md">'+fmt(d)+'</p>':'')+'</div>'}).join("")+'</div>';
+ h+='<p class="msub" style="margin-top:16px">Medallas de región</p><div class="mg">'+regions.map(function(r){var on=byReg[r].length>0&&byReg[r].every(isOn),d=on?regDate(r):null;return '<div class="'+(on?'':'w')+'">'+regMedal(r,on)+'<p>'+(RN[r]||r)+'</p>'+(on?'<p class="md">'+(d?fmt(d):"sin fecha")+'</p>':'<p class="md">Pendiente</p>')+'</div>'}).join("")+'</div>';
+ $("log").innerHTML=h}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
  var pct=(c/tot*100).toFixed(1).replace(".",",")+" %";
  $("pb").style.width=(c/tot*100)+"%";var pcol=numColor(c/tot);$("pb").style.background=pcol;$("pgp").style.color=pcol;$("pgp").innerHTML=pct+(c>=tot&&tot>0?goldMedal():"");
  $("dexdone").style.display=dexDone()?"flex":"none";$("dexdone").innerHTML=dexDone()?goldMedal()+"Dex completada":"";renderLog();
  $("regs").innerHTML=regions.map(function(r){var a=byReg[r],k=a.filter(isOn).length;
-  return '<div class="rg"><b>'+r+(k===a.length&&a.length?goldMedal():'')+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em style="color:'+numColor(k/a.length)+';font-weight:600">'+k+'/'+a.length+'</em></div>'}).join("");
+  return '<div class="rg"><b>'+riIcon(r)+'<span>'+r+'</span>'+(k===a.length&&a.length?goldMedal():'')+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em style="color:'+numColor(k/a.length)+';font-weight:600">'+k+'/'+a.length+'</em></div>'}).join("");
 }
 function pickRnd(){var m=DEX.p.filter(function(p){return !isOn(p[0])});rnd=m.length?m[Math.floor(Math.random()*m.length)][0]:null}
 var RAR={"Special Illustration Rare":"r-sir","Illustration Rare":"r-ir","Hyper Rare":"r-hy","Special Art Rare":"r-sar","Art Rare":"r-ar","Alt Art":"r-alt","Galarian Gallery":"r-gg"},REN=["Special Illustration Rare","Illustration Rare","Hyper Rare"],ORD=["Special Illustration Rare","Illustration Rare","Hyper Rare","Alt Art","Galarian Gallery","Special Art Rare · JP","Art Rare · JP"], CC={}, rtok=0, rar=null;
@@ -367,17 +385,18 @@ function renderAz(){
  $("az-m").onclick=function(){toggle(rnd)};
  ensureRar();
 }
-var openYears={};
+var openYears={},openMonths={};
 function renderMes(){
  var by={},und=0;
- Object.keys(S.caps).forEach(function(k){var d=S.caps[k];if(!d){und++;return}var y=d.slice(0,4),mo=+d.slice(5,7);if(!by[y])by[y]={t:0,m:{}};by[y].t++;by[y].m[mo]=(by[y].m[mo]||0)+1});
+ Object.keys(S.caps).forEach(function(k){var d=S.caps[k];if(!d){und++;return}var y=d.slice(0,4),mo=+d.slice(5,7);if(!by[y])by[y]={t:0,m:{}};by[y].t++;by[y].m[mo]=(by[y].m[mo]||0)+1;if(!by[y].l)by[y].l={};(by[y].l[mo]=by[y].l[mo]||[]).push([+k,d])});
  var ys=Object.keys(by).sort().reverse();
  if(!ys.length&&!und){$("mes").innerHTML='<div class="empty">Aún no hay capturas con fecha.</div>';return}
  var mx=1;ys.forEach(function(y){for(var k in by[y].m)mx=Math.max(mx,by[y].m[k])});
  var h=ys.map(function(y){var o=openYears[y],ms=Object.keys(by[y].m).map(Number).sort(function(a,b){return b-a});
-  return '<div class="yr"><div class="yh'+(o?' o':'')+'" data-y="'+y+'"><b>'+y+'</b><span>'+by[y].t+(by[y].t===1?' captura':' capturas')+'</span><span class="ch">'+ico("chv")+'</span></div><div class="ymo" style="display:'+(o?'block':'none')+'">'+ms.map(function(m){return '<div class="mo"><b>'+MESES[m-1]+'</b><div class="bar"><i style="width:'+(by[y].m[m]/mx*100)+'%"></i></div><em>'+by[y].m[m]+'</em></div>'}).join("")+'</div></div>'}).join("");
+  return '<div class="yr"><div class="yh'+(o?' o':'')+'" data-y="'+y+'"><b>'+y+'</b><span>'+by[y].t+(by[y].t===1?' captura':' capturas')+'</span><span class="ch">'+ico("chv")+'</span></div><div class="ymo" style="display:'+(o?'block':'none')+'">'+ms.map(function(m){var key=y+'-'+m,om=openMonths[key],ls=(by[y].l[m]||[]).sort(function(a,b){return a[1]<b[1]?-1:a[1]>b[1]?1:a[0]-b[0]});return '<div class="mo k'+(om?' o':'')+'" data-k="'+key+'"><b>'+MESES[m-1]+'</b><div class="bar"><i style="width:'+(by[y].m[m]/mx*100)+'%"></i></div><em>'+by[y].m[m]+'</em><span class="ch">'+ico("chv")+'</span></div><div class="mlist" style="display:'+(om?'block':'none')+'">'+ls.map(function(x){return '<div class="ml"><span>N.º '+x[0]+'</span><span>'+(byNum[x[0]]?byNum[x[0]].name:'')+'</span><span>'+fmt(x[1])+'</span></div>'}).join("")+'</div>'}).join("")+'</div></div>'}).join("");
  if(und)h+='<div class="mo" style="margin-top:8px"><b>Sin fecha</b><div class="bar"><i style="width:0"></i></div><em>'+und+'</em></div>';
  $("mes").innerHTML=h;
+ Array.prototype.forEach.call($("mes").querySelectorAll(".mo.k"),function(e){e.onclick=function(){var k=e.getAttribute("data-k"),o=!openMonths[k];openMonths[k]=o;e.classList.toggle("o",o);e.nextSibling.style.display=o?"block":"none"}});
  Array.prototype.forEach.call($("mes").querySelectorAll(".yh"),function(e){e.onclick=function(){var y=e.getAttribute("data-y"),o=!openYears[y];openYears[y]=o;e.classList.toggle("o",o);e.nextSibling.style.display=o?"block":"none"}})
 }
 function renderChips(){

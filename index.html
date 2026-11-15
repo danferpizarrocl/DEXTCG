@@ -111,6 +111,7 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 .rdiag{font-size:11px;color:var(--tx3);margin-top:8px}
 .empty{color:var(--tx2);text-align:center;padding:24px 0}
 #spl{position:fixed;inset:0;background:#e53935;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:99;transition:opacity .45s}#spl.h{opacity:0;pointer-events:none}#spl svg{width:150px;height:150px;border-radius:34px}#spl b{color:#fff;font-size:30px;letter-spacing:.5px}
+@media(min-width:520px){body{max-width:1100px}.g{grid-template-columns:repeat(auto-fill,minmax(116px,1fr))}#v-prog,#v-az,#v-res{max-width:640px;margin-left:auto;margin-right:auto}}
 </style></head><body>
 <div id="spl"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#1d1d22"/><g transform="rotate(-8 256 256)"><rect x="150" y="100" width="212" height="300" rx="26" fill="#e53935"/><rect x="170" y="122" width="172" height="172" rx="14" fill="#ffe3e1"/><polygon points="256.0,142.0 271.9,184.2 316.9,186.2 281.7,214.3 293.6,257.8 256.0,233.0 218.4,257.8 230.3,214.3 195.1,186.2 240.1,184.2" fill="#c62828"/><rect x="170" y="316" width="112" height="14" rx="7" fill="#ffffff" opacity=".75"/><rect x="170" y="344" width="74" height="14" rx="7" fill="#ffffff" opacity=".75"/></g></svg><b>DexTCG</b><i id="sv" style="color:#fff;opacity:.85;font-style:normal;font-size:13px"></i></div>
 <header><h1>DexTCG</h1><div class="hbox"><div id="info" class="hinfo"></div></div><div class="hr"><button id="theme" aria-label="Modo claro o nocturno"></button><button id="lock" aria-label="Candado de edición"></button></div></header>
@@ -192,7 +193,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="4.2";
+var VERSION="4.3";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"],[1250,"Leyenda","#D4537E","#993556","#F4C0D1","#4B1528"],[1500,"Campeón","#378ADD","#185FA5","#B5D4F4","#042C53"],[1750,"Élite","#E24B4A","#A32D2D","#F7C1C1","#501313"],[2000,"Gran Maestro","#5F5E5A","#FAC775","#2C2C2A","#FAC775"]];
 function medV(){var t=DEX.p.length;return MED.filter(function(m){return m[0]<=t})}

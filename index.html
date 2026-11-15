@@ -52,7 +52,9 @@ nav button.on{color:var(--ac);font-weight:600}
 .big{font-size:34px;font-weight:700}.mut{color:var(--tx2);font-size:13px}
 .row{display:flex;justify-content:space-between;align-items:baseline}
 .bar{height:9px;background:var(--sp);border-radius:5px;overflow:hidden;flex:1}.bar i{display:block;height:100%;background:var(--ac);border-radius:5px}
-.rg{display:flex;align-items:center;gap:8px;font-size:14px;margin:9px 0}.rg b{width:58px;font-weight:400}.rg em{width:60px;text-align:right;font-style:normal;color:var(--tx2);font-size:13px}
+.rg{display:flex;align-items:center;gap:8px;font-size:14px;margin:9px 0}.rg b{width:80px;font-weight:400;display:flex;align-items:center;gap:5px}.rg b svg{width:16px;height:19px;flex:none}
+.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px;text-align:center}.mg svg{width:46px;height:54px}.mg p{margin:2px 0 0;font-size:12px;color:var(--tx2)}.mg .w p{color:var(--tx2);opacity:.7}.msub{margin:0 0 10px;font-size:13px;color:var(--tx2)}
+.dd{display:flex;align-items:center;justify-content:center;gap:12px;font-size:20px;font-weight:700;color:#c98a00}.dd svg{width:38px;height:45px;flex:none}.rg em{width:60px;text-align:right;font-style:normal;color:var(--tx2);font-size:13px}
 button{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px}
 button:active{transform:scale(.98)}
 button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -119,10 +121,12 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
  <div class="g" id="g"></div>
 </section>
 <section class="view" id="v-prog">
+ <div class="card dd" id="dexdone" style="display:none"></div>
  <div class="card"><div class="t" id="t-prog"></div>
  <div class="row"><span class="big" id="cnt">0</span><span class="mut" id="cnt2"></span></div>
  <div style="display:flex;margin:10px 0 4px"><div class="bar"><i id="pb"></i></div></div>
  <div id="regs"></div></div>
+ <div class="card"><div class="t tg o" id="t-log"></div><div id="log"></div></div>
  <div class="card"><div class="t tg" id="t-mes"></div><div id="mes" style="display:none"></div></div>
 </section>
 <section class="view" id="v-az"><div class="card"><div class="t" id="t-az"></div><div class="azc" id="az"></div></div>
@@ -159,7 +163,7 @@ var TEMPLATE_B64="UEsDBBQABgAIAAAAIQD/Drw1GgIAACoKAAATAAgCW0NvbnRlbnRfVHlwZXNdLn
 var KEY="dex2025_v1", SPR="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
 var MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 var IC={
-chart:'<circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/>',
+chart:'<circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/>',medal:'<circle cx="12" cy="15" r="5"/><path d="M9 3l2.5 6M15 3l-2.5 6"/>',
 dice:'<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><circle cx="12" cy="12" r="1"/>',
 cal:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M16 3v4M8 3v4M4 11h16"/>',
 list:'<path d="M4 6h16M4 12h16M4 18h10"/>',
@@ -187,14 +191,39 @@ function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clear
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="3.7";
+var VERSION="3.8";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
+var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"]];
+var STAR='<polygon points="24,25 26.35,30.76 32.56,31.22 27.8,35.24 29.29,41.28 24,38 18.71,41.28 20.2,35.24 15.44,31.22 21.65,30.76" fill="#854F0B"/>';
+function goldMedal(){return '<svg viewBox="0 0 48 56" role="img" aria-label="Medalla dorada"><path d="M14 0h8l4 18h-9z" fill="#BA7517"/><path d="M34 0h-8l-4 18h9z" fill="#854F0B"/><circle cx="24" cy="34" r="18" fill="#FAC775" stroke="#854F0B" stroke-width="3"/>'+STAR+'</svg>'}
+function numMedal(m,on){var t=m[0]>=1000?12:14;
+ if(!on)return '<svg viewBox="0 0 48 56" role="img" aria-label="Medalla de '+m[0]+' pendiente"><path d="M14 0h8l4 18h-9z" fill="#B4B2A9"/><path d="M34 0h-8l-4 18h9z" fill="#B4B2A9"/><circle cx="24" cy="34" r="18" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="2" stroke-dasharray="3 3"/><text x="24" y="'+(t==12?38:39)+'" text-anchor="middle" font-size="'+t+'" font-weight="500" fill="#888780">'+m[0]+'</text></svg>';
+ return '<svg viewBox="0 0 48 56" role="img" aria-label="Medalla de '+m[0]+' ganada"><path d="M14 0h8l4 18h-9z" fill="'+m[2]+'"/><path d="M34 0h-8l-4 18h9z" fill="'+m[3]+'"/><circle cx="24" cy="34" r="18" fill="'+m[4]+'" stroke="'+m[3]+'" stroke-width="2"/><circle cx="24" cy="34" r="13" fill="none" stroke="'+m[3]+'" stroke-opacity=".5"/><text x="24" y="'+(t==12?38:39)+'" text-anchor="middle" font-size="'+t+'" font-weight="500" fill="'+m[5]+'">'+m[0]+'</text></svg>'}
+function dexDone(){var t=DEX.p.length;return t>0&&Object.keys(S.caps).length>=t}
+function earnedKeys(){var c=Object.keys(S.caps).length,k=[];
+ MED.forEach(function(m){if(c>=m[0])k.push("n"+m[0])});
+ regions.forEach(function(r){var a=byReg[r];if(a.length&&a.every(isOn))k.push("r:"+r)});
+ if(dexDone())k.push("dex");return k}
+var MEDKEY="dextcg_medals";
+function checkMedals(silent){var cur=earnedKeys(),st=null;
+ try{st=JSON.parse(localStorage.getItem(MEDKEY))}catch(e){}
+ if(!Array.isArray(st)){try{localStorage.setItem(MEDKEY,JSON.stringify(cur))}catch(e){}return}
+ var nuevos=cur.filter(function(k){return st.indexOf(k)<0});
+ if(!nuevos.length)return;
+ try{localStorage.setItem(MEDKEY,JSON.stringify(st.concat(nuevos)))}catch(e){}
+ if(silent)return;
+ if(nuevos.length>1){toast("¡Ganaste "+nuevos.length+" medallas nuevas!");return}
+ var k=nuevos[0];toast(k==="dex"?"¡Dex completada!":k.indexOf("r:")===0?"¡Medalla de región: "+k.slice(2)+"!":"¡Medalla de "+nf(+k.slice(1))+" capturados!")}
+function renderLog(){var c=Object.keys(S.caps).length,nx=null;
+ MED.forEach(function(m){if(!nx&&c<m[0])nx=m});
+ $("log").innerHTML='<p class="msub">'+(nx?"Próxima: "+nf(nx[0])+" · faltan "+nf(nx[0]-c):"Conseguiste todas las medallas")+'</p><div class="mg">'+MED.map(function(m){var on=c>=m[0];return '<div class="'+(on?'':'w')+'">'+numMedal(m,on)+'<p>'+m[1]+'</p></div>'}).join("")+'</div>'}
 function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
  $("cnt").textContent=nf(c);$("cnt2").textContent="de "+nf(tot)+" capturados · "+(c/tot*100).toFixed(1).replace(".",",")+" %";
  $("pb").style.width=(c/tot*100)+"%";var pcol=numColor(c/tot);$("pb").style.background=pcol;$("cnt").style.color=pcol;$("cnt2").style.color=pcol;
+ $("dexdone").style.display=dexDone()?"flex":"none";$("dexdone").innerHTML=dexDone()?goldMedal()+"Dex completada":"";renderLog();
  $("regs").innerHTML=regions.map(function(r){var a=byReg[r],k=a.filter(isOn).length;
-  return '<div class="rg"><b>'+r+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em style="color:'+numColor(k/a.length)+';font-weight:600">'+k+'/'+a.length+'</em></div>'}).join("");
+  return '<div class="rg"><b>'+r+(k===a.length&&a.length?goldMedal():'')+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em style="color:'+numColor(k/a.length)+';font-weight:600">'+k+'/'+a.length+'</em></div>'}).join("");
 }
 function pickRnd(){var m=DEX.p.filter(function(p){return !isOn(p[0])});rnd=m.length?m[Math.floor(Math.random()*m.length)][0]:null}
 var RAR={"Special Illustration Rare":"r-sir","Illustration Rare":"r-ir","Hyper Rare":"r-hy","Special Art Rare":"r-sar","Art Rare":"r-ar","Alt Art":"r-alt","Galarian Gallery":"r-gg"},REN=["Special Illustration Rare","Illustration Rare","Hyper Rare"],ORD=["Special Illustration Rare","Illustration Rare","Hyper Rare","Alt Art","Galarian Gallery","Special Art Rare · JP","Art Rare · JP"], CC={}, rtok=0, rar=null;
@@ -411,7 +440,8 @@ function renderGrid(){
  var base=q?null:(all?DEX.p.map(function(p){return p[0]}):byReg[curReg]);
  var capN=q?0:base.filter(isOn).length,col=q?"":numColor(capN/base.length);
  $("info").style.color=col;
- $("info").innerHTML=q?('<div class="l1"><b>'+total+'</b> resultado'+(total===1?'':'s')+'</div>'):('<div class="l1"><b>'+capN+'</b>'+' de '+nf(base.length)+'</div>');
+ var done=!q&&all&&dexDone();if(done)$("info").style.color="#d9a400";
+ $("info").innerHTML=done?('<div class="l1"><b>Dex completada</b><svg viewBox="0 0 48 56" style="height:calc(var(--hs)*.95);width:calc(var(--hs)*.8);vertical-align:-.15em;margin-left:6px"><path d="M14 0h8l4 18h-9z" fill="#BA7517"/><path d="M34 0h-8l-4 18h9z" fill="#854F0B"/><circle cx="24" cy="34" r="18" fill="#FAC775" stroke="#854F0B" stroke-width="3"/>'+STAR+'</svg></div>'):q?('<div class="l1"><b>'+total+'</b> resultado'+(total===1?'':'s')+'</div>'):('<div class="l1"><b>'+capN+'</b>'+' de '+nf(base.length)+'</div>');
  fitHdr();
  if(!total){$("g").innerHTML='<div class="empty" style="grid-column:1/-1">Sin resultados.</div>';watch();return}
  var h=shown.map(cardHtml).join("");
@@ -424,7 +454,7 @@ function locked(){toast("Bloqueado. Toca el candado para editar")}
 function toggle(n){
  if(!editing){locked();return}
  if(isOn(n))delete S.caps[n];else S.caps[n]=today();
- save();renderProg();renderMes();renderGrid();renderAz();renderLast();
+ save();renderProg();renderMes();renderGrid();renderAz();renderLast();checkMedals(false);
 }
 function renderLast(){
  $("lastb").textContent=S.last?("Último respaldo: "+fmt(S.last.date)+" · "+S.last.nums.length+" capturados"):"Aún no has hecho un respaldo desde esta app.";
@@ -499,7 +529,7 @@ $("file").onchange=async function(){
   else caps=await parseXlsx(await f.arrayBuffer())}catch(e){toast("No pude leer el archivo: "+e.message);return}
  var k=Object.keys(caps).length;
  var i=await modal('<h3>Importar respaldo</h3><p>El archivo trae <b>'+k+'</b> capturados. Tus capturas actuales ('+Object.keys(S.caps).length+') se reemplazarán por estas.</p>',[{t:"Cancelar"},{t:"Reemplazar",pri:1}]);
- if(i!==1)return;S.caps=caps;save();rnd=null;renderAll();toast("Importado: "+k+" capturados")};
+ if(i!==1)return;S.caps=caps;save();rnd=null;renderAll();checkMedals(true);toast("Importado: "+k+" capturados")};
 $("q").oninput=resetList;$("f").onchange=resetList;$("yr").onchange=function(){yr=$("yr").value;resetList()};
 
 $("t-prog").innerHTML=ico("chart")+"Mi progreso";$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};
@@ -507,6 +537,8 @@ $("viewer").onclick=function(e){if(e.target===$("viewer"))closeViewer(false)};
 window.addEventListener("popstate",function(){if(skipPops>0){skipPops--;return}if(vOpen)closeViewer(true);else if(shOpen)closeSheet(true)});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(vOpen)closeViewer(false);else closeSheet(false)}});
 $("t-az").innerHTML=ico("dice")+"Pokémon al azar";$("t-shp").innerHTML=ico("dex")+"Datos del Pokémon";$("t-shr").innerHTML=ico("star")+"Cartas de máxima rareza";$("shx").innerHTML=ico("x");$("shv").innerHTML=ico("back")+"Volver";$("shx").onclick=function(){closeSheet(false)};$("shv").onclick=function(){closeSheet(false)};$("t-rar").innerHTML=ico("star")+"Cartas de máxima rareza";
+$("t-log").innerHTML='<span class="l">'+ico("medal")+"Logros</span>"+'<span class="ch">'+ico("chv")+"</span>";
+$("t-log").onclick=function(){var o=$("log").style.display==="none";$("log").style.display=o?"block":"none";$("t-log").classList.toggle("o",o)};
 $("t-mes").innerHTML='<span class="l">'+ico("cal")+"Historial de capturas</span>"+'<span class="ch">'+ico("chv")+"</span>";
 $("t-mes").onclick=function(){var o=$("mes").style.display==="none";$("mes").style.display=o?"block":"none";$("t-mes").classList.toggle("o",o)};$("t-res").innerHTML=ico("save")+"Respaldo";
 var TABS=[["v-dex","home","Dex"],["v-prog","chart","Progreso"],["v-az","dice","Azar"],["v-res","save","Respaldo"]];
@@ -531,7 +563,7 @@ $("lock").onclick=async function(){
  var i=await modal('<h3>¿Empezar a editar?</h3><p class="mut">Podrás marcar capturados e importar respaldos hasta que toques «Terminar edición».</p>',[{t:"Cancelar"},{t:"Editar",pri:1}]);
  if(i===1){setEdit(true);toast("Modo edición")}};
 $("edend").onclick=function(){setEdit(false);toast("Bloqueado")};
-renderAll();
+checkMedals(true);renderAll();
 setTimeout(function(){var e=$("spl");e.classList.add("h");setTimeout(function(){e.remove()},600)},1600);
 if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
 </script></body></html>

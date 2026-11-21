@@ -86,7 +86,6 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 .ov.s{display:flex}.md{background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-width:560px;width:100%;max-height:85vh;overflow:auto}
 .md h3{font-size:17px;margin-bottom:8px}.md ul{margin:8px 0 8px 18px;font-size:14px}.md .bt{margin-top:14px}
 .toast{position:fixed;inset:0;background:rgba(0,0,0,.28);display:none;align-items:center;justify-content:center;z-index:10;padding:20px}.toast .tb{background:var(--card);color:var(--tx);border-radius:20px;padding:22px 26px;font-size:16px;font-weight:600;text-align:center;max-width:min(340px,100%);box-shadow:0 10px 40px rgba(0,0,0,.35)}.toast .tb svg{display:block;width:64px;height:75px;margin:0 auto 10px}
-.ov.ct .md .mfx{text-align:left}.mfx .mhd{display:flex;align-items:center;justify-content:space-between;gap:8px}.mfx .mhd button{padding:7px 10px;font-size:13px}.mfx .mhd svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.mfx h3{display:flex;align-items:center;gap:6px}.mfx h3 svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.mfx .mch{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.mfx .mch button{padding:5px 10px;font-size:12px;border-radius:8px;background:var(--sp);border:0}.mfx .mch button.on{background:var(--acbg);color:var(--ac);font-weight:600}.mfx .mrg{border-top:1px solid var(--bd);padding:10px 0}.mfx .mrh{display:flex;justify-content:space-between;font-size:14px;font-weight:600;cursor:pointer}.mfx .mrl{font-size:13px;line-height:1.8;color:var(--tx2);margin-top:6px}.mfx .cnt{color:#e53935}.mfx .okc{color:var(--ok)}.mfx .cb{display:flex;gap:8px;margin-top:10px}.mfx .cb button{flex:1}
 .ov.ct{align-items:center;padding:20px}.ov.ct .md{border-radius:20px;max-width:420px;padding:26px 22px;text-align:center}.ov.ct .md h3{font-size:20px}.ov.ct .md p{font-size:15px;margin:10px 0}
 .rsum{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.rb{font-size:12px;padding:4px 10px;border-radius:99px;font-weight:600;white-space:nowrap}
 .r-sir{background:#fde7f3;color:#9b1c63}.r-ir{background:#e6edff;color:#1f4fc0}.r-hy{background:#fff1c9;color:#8a5a00}
@@ -122,7 +121,7 @@ select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(
 <section class="view on" id="v-dex">
  <div class="sticky"><div class="tools"><select id="reg" aria-label="Región"></select><select id="f"><option value="all">Todos</option><option value="on">Capturados</option><option value="off">Faltan</option></select></div>
  <select id="yr" aria-label="Año de captura" style="display:none;width:100%;margin-top:8px"></select>
- <div style="display:flex;gap:8px;margin-top:8px"><input type="search" id="q" placeholder="Buscar nombre o número" style="display:block;flex:1;min-width:0"><button id="mf" style="flex:none;padding:10px 12px;font-weight:600;color:var(--ac);border:2px solid var(--ac);background:var(--acbg)"></button></div></div>
+ <input type="search" id="q" placeholder="Buscar nombre o número" style="display:block;width:100%;margin-top:8px"></div>
  <div class="g" id="g"></div>
 </section>
 <section class="view" id="v-prog">
@@ -195,7 +194,7 @@ function toast(m,o){o=o||{};var t=$("toast"),b=$("tb");b.innerHTML=(o.ico||"");v
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="4.8";
+var VERSION="4.7";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"],[1250,"Leyenda","#D4537E","#993556","#F4C0D1","#4B1528"],[1500,"Campeón","#378ADD","#185FA5","#B5D4F4","#042C53"],[1750,"Élite","#E24B4A","#A32D2D","#F7C1C1","#501313"],[2000,"Gran Maestro","#5F5E5A","#FAC775","#2C2C2A","#FAC775"]];
 function medV(){var t=DEX.p.length;return MED.filter(function(m){return m[0]<=t})}
@@ -560,31 +559,6 @@ $("file").onchange=async function(){
  if(i!==1&&i!==2)return;
  if(i===1){var m={};Object.keys(S.caps).forEach(function(n){m[n]=S.caps[n]});Object.keys(caps).forEach(function(n){if(!(n in m)||(!m[n]&&caps[n]))m[n]=caps[n]});caps=m}
  S.caps=caps;save();rnd=null;renderAll();checkMedals(true);toast((i===1?"Combinado: ":"Importado: ")+Object.keys(caps).length+" capturados",{sticky:1})};
-function faltan(){var o={},t=0;regions.forEach(function(r){o[r]=byReg[r].filter(function(n){return !isOn(n)});t+=o[r].length});return {by:o,tot:t}}
-function p3(n){return ("000"+n).slice(-3)}
-$("mf").innerHTML=ico("list")+"Me faltan";
-$("mf").onclick=function(){
- var F=faltan(),sel="Todas",open={};
- if(F.tot===0){toast("¡No te falta ninguno!");return}
- function lines(r){return F.by[r].map(function(n){return p3(n)+" "+byNum[n].name})}
- function draw(){
-  var rs=sel==="Todas"?regions:[sel],h='<div class="mhd"><h3 style="margin:0">'+ico("list")+'Me faltan</h3><button id="mfc">'+ico("save")+'Copiar lista</button></div><p class="mut" style="margin:4px 0">Te faltan <b>'+nf(F.tot)+'</b> de '+nf(DEX.p.length)+'</p>';
-  h+='<div class="mch">'+["Todas"].concat(regions).map(function(r){return '<button data-r="'+r+'" class="'+(r===sel?"on":"")+'">'+r+'</button>'}).join("")+'</div>';
-  rs.forEach(function(r){var a=F.by[r];
-   if(!a.length)h+='<div class="mrg"><div class="mrh"><span>'+r+'</span><span class="okc">completa</span></div></div>';
-   else{var o=sel!=="Todas"||open[r];h+='<div class="mrg"><div class="mrh" data-o="'+r+'"><span>'+(o?"▾":"▸")+" "+r+'</span><span class="cnt">faltan '+a.length+'</span></div>'+(o?'<div class="mrl">'+lines(r).join("<br>")+'</div>':"")+'</div>'}});
-  return h}
- var pr=modal('<div class="mfx" id="mfb"></div>',[{t:"Cerrar"}],true);
- function bind(){var b=$("mfb");b.innerHTML=draw();
-  Array.prototype.forEach.call(b.querySelectorAll("[data-r]"),function(e){e.onclick=function(){sel=e.getAttribute("data-r");bind()}});
-  Array.prototype.forEach.call(b.querySelectorAll("[data-o]"),function(e){e.onclick=function(){var r=e.getAttribute("data-o");open[r]=!open[r];bind()}});
-  $("mfc").onclick=function(){
-   var rs=sel==="Todas"?regions:[sel],tx="Me faltan "+(sel==="Todas"?F.tot+" de "+DEX.p.length:F.by[sel].length+" en "+sel)+"\n";
-   rs.forEach(function(r){if(F.by[r].length)tx+="\n"+r+" ("+F.by[r].length+")\n"+lines(r).join("\n")+"\n"});
-   var ok=function(){toast("Lista copiada")},bad=function(){toast("No se pudo copiar",{sticky:1})};
-   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(tx).then(ok,bad);
-   else{try{var t=document.createElement("textarea");t.value=tx;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);ok()}catch(e){bad()}}}}
- bind()};
 $("q").oninput=resetList;$("f").onchange=resetList;$("yr").onchange=function(){yr=$("yr").value;resetList()};
 
 $("t-prog").innerHTML=ico("chart")+"Mi progreso"+'<span id="pgp" class="pgp"></span>';$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};

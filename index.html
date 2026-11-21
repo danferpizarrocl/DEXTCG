@@ -194,7 +194,7 @@ function toast(m,o){o=o||{};var t=$("toast"),b=$("tb");b.innerHTML=(o.ico||"");v
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="4.6";
+var VERSION="4.7";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"],[1250,"Leyenda","#D4537E","#993556","#F4C0D1","#4B1528"],[1500,"Campeón","#378ADD","#185FA5","#B5D4F4","#042C53"],[1750,"Élite","#E24B4A","#A32D2D","#F7C1C1","#501313"],[2000,"Gran Maestro","#5F5E5A","#FAC775","#2C2C2A","#FAC775"]];
 function medV(){var t=DEX.p.length;return MED.filter(function(m){return m[0]<=t})}
@@ -228,15 +228,15 @@ function regMedal(r,on){var st=on?'fill="#FAC775" stroke="#854F0B" stroke-width=
 function allDates(){return Object.keys(S.caps).map(function(k){return S.caps[k]}).filter(Boolean).sort()}
 function regDate(r){var a=byReg[r];if(!a.length||!a.every(isOn))return null;var d=a.map(function(n){return S.caps[n]}).filter(Boolean).sort();return d.length?d[d.length-1]:null}
 var FB='<path d="M12 3l2.6 5.8 6.4.6-4.8 4.2 1.4 6.2L12 16.8 6.4 19.8l1.4-6.2L3 9.4l6.4-.6z"/>';
-function honorMedal(k,tot,done){var gold=done,ribA=gold?"#BA7517":"#B4B2A9",ribB=gold?"#854F0B":"#B4B2A9",pts="",ic="",n=Math.max(tot,3),sz=Math.min(8,2*Math.PI*14*0.85/n);
+function honorMedal(k,tot,done,fl){var gold=done,ribA=gold?"#BA7517":"#B4B2A9",ribB=gold?"#854F0B":"#B4B2A9",pts="",ic="",n=Math.max(tot,3),sz=Math.min(8,2*Math.PI*14*0.85/n);
  for(var i=0;i<tot;i++){var a=(-90+i*360/tot)*Math.PI/180;pts+=(24+22.5*Math.cos(a)).toFixed(1)+","+(34+22.5*Math.sin(a)).toFixed(1)+" ";
-  var x=24+14*Math.cos(a),y=34+14*Math.sin(a),lit=i<k,st=gold?'fill="#854F0B" stroke="#854F0B" stroke-width="1"':lit?'fill="#FAC775" stroke="#854F0B" stroke-width="1.6"':'fill="#E4E2DA" stroke="#B4B2A9" stroke-width="1.2"';
+  var x=24+14*Math.cos(a),y=34+14*Math.sin(a),lit=fl?!!fl[i]:i<k,st=gold?'fill="#854F0B" stroke="#854F0B" stroke-width="1"':lit?'fill="#FAC775" stroke="#854F0B" stroke-width="1.6"':'fill="#E4E2DA" stroke="#B4B2A9" stroke-width="1.2"';
   ic+='<g transform="translate('+(x-sz/2).toFixed(2)+' '+(y-sz/2).toFixed(2)+') scale('+(sz/24).toFixed(3)+')" '+st+' stroke-linejoin="round" stroke-linecap="round">'+(RM[regions[i]]||FB)+'</g>'}
  return '<svg viewBox="0 0 48 56" role="img" aria-label="Medalla de honor: '+k+' de '+tot+' regiones"><path d="M14 0h8l4 18h-9z" fill="'+ribA+'"/><path d="M34 0h-8l-4 18h9z" fill="'+ribB+'"/><polygon points="'+pts+'" '+(gold?'fill="#FAC775" stroke="#854F0B" stroke-width="1.6"':'fill="#F1EFE8" stroke="#B4B2A9" stroke-width="1.6"')+' stroke-linejoin="round"/>'+ic+'<polygon points="24,28.5 25.3,32.1 29.1,32.3 26.1,34.6 27.1,38.3 24,36.2 20.9,38.3 21.9,34.6 18.9,32.3 22.7,32.1" fill="'+(gold?"#854F0B":"#D3D1C7")+'"/></svg>'}
 function renderLog(){var c=Object.keys(S.caps).length,nx=null,mv=medV(),ds=allDates();
  mv.forEach(function(m){if(!nx&&c<m[0])nx=m});
  var kr=regions.filter(function(r){return byReg[r].every(isOn)}).length,done=dexDone();
- var h='<div class="hn">'+honorMedal(kr,regions.length,done)+'<p class="hh">Medalla de honor</p><p>'+(done?"Dex completada"+(ds.length?" · "+fmt(ds[ds.length-1]):""):kr+" de "+regions.length+" regiones")+'</p></div>';
+ var h='<div class="hn">'+honorMedal(kr,regions.length,done,regions.map(function(r){return byReg[r].length>0&&byReg[r].every(isOn)}))+'<p class="hh">Medalla de honor</p><p>'+(done?"Dex completada"+(ds.length?" · "+fmt(ds[ds.length-1]):""):kr+" de "+regions.length+" regiones")+'</p></div>';
  h+='<p class="st">'+ico("medal")+'Medallas de región</p><div class="mg">'+regions.map(function(r){var on=byReg[r].length>0&&byReg[r].every(isOn),d=on?regDate(r):null;return '<div class="'+(on?'':'w')+'">'+regMedal(r,on)+'<p>'+(RN[r]||r)+'</p>'+(on?'<p class="md">'+(d?fmt(d):"sin fecha")+'</p>':'<p class="md">Pendiente</p>')+'</div>'}).join("")+'</div>';
  h+='<p class="st" style="margin-top:18px">'+ico("medal")+'Medallas por captura</p><p class="msub">'+(nx?"Próxima: "+nf(nx[0])+" · faltan "+nf(nx[0]-c):"Conseguiste todas las medallas")+'</p><div class="mg">'+mv.map(function(m){var on=c>=m[0],d=on&&ds.length>=m[0]?ds[m[0]-1]:null;return '<div class="'+(on?'':'w')+'">'+numMedal(m,on)+'<p>'+m[1]+'</p>'+(d?'<p class="md">'+fmt(d)+'</p>':'')+'</div>'}).join("")+'</div>';
  $("log").innerHTML=h}
@@ -541,7 +541,7 @@ async function parseXlsx(buf){
  return caps;
 }
 
-$("bx").innerHTML=ico("dl")+"Exportar Excel";$("bj").innerHTML=ico("save")+"Exportar JSON";$("bi").innerHTML=ico("up")+"Importar";
+$("bx").innerHTML=ico("dl")+"Exportar Excel";$("bj").innerHTML=ico("save")+"Exportar JSON";$("bi").innerHTML=ico("up")+"Importar (Excel o JSON)";
 $("bx").onclick=async function(){
  var i=await modal(summary(),[{t:"Cancelar"},{t:"Descargar Excel",pri:1}]);if(i!==1)return;
  try{var b=await buildXlsx();await download("DEXTCG_respaldo_"+today()+".xlsx",b);stamp();toast("Excel guardado")}catch(e){toast(e&&e.code==="declined"?"No se guardó":"No se pudo crear el Excel",{sticky:1})}};
@@ -554,8 +554,11 @@ $("file").onchange=async function(){
  try{if(/\.json$/i.test(f.name)){var j=JSON.parse(await f.text());if(!j.caps)throw new Error("JSON inválido");caps=j.caps}
   else caps=await parseXlsx(await f.arrayBuffer())}catch(e){toast("No pude leer el archivo: "+e.message,{sticky:1});return}
  var k=Object.keys(caps).length;
- var i=await modal('<h3>Importar respaldo</h3><p>El archivo trae <b>'+k+'</b> capturados. Tus capturas actuales ('+Object.keys(S.caps).length+') se reemplazarán por estas.</p>',[{t:"Cancelar"},{t:"Reemplazar",pri:1}]);
- if(i!==1)return;S.caps=caps;save();rnd=null;renderAll();checkMedals(true);toast("Importado: "+k+" capturados",{sticky:1})};
+ var nu=Object.keys(caps).filter(function(n){return !(n in S.caps)}).length;
+ var i=await modal('<h3>Importar respaldo</h3><p>El archivo trae <b>'+k+'</b> capturados y tú tienes <b>'+Object.keys(S.caps).length+'</b>.</p><p class="mut"><b>Combinar</b> suma al tuyo las '+nu+' que no tienes y mantiene las demás. <b>Reemplazar</b> deja tus capturas iguales al archivo.</p>',[{t:"Cancelar"},{t:"Combinar",pri:1},{t:"Reemplazar"}]);
+ if(i!==1&&i!==2)return;
+ if(i===1){var m={};Object.keys(S.caps).forEach(function(n){m[n]=S.caps[n]});Object.keys(caps).forEach(function(n){if(!(n in m)||(!m[n]&&caps[n]))m[n]=caps[n]});caps=m}
+ S.caps=caps;save();rnd=null;renderAll();checkMedals(true);toast((i===1?"Combinado: ":"Importado: ")+Object.keys(caps).length+" capturados",{sticky:1})};
 $("q").oninput=resetList;$("f").onchange=resetList;$("yr").onchange=function(){yr=$("yr").value;resetList()};
 
 $("t-prog").innerHTML=ico("chart")+"Mi progreso"+'<span id="pgp" class="pgp"></span>';$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};

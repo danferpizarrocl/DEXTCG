@@ -194,7 +194,7 @@ function toast(m,o){o=o||{};var t=$("toast"),b=$("tb");b.innerHTML=(o.ico||"");v
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="4.10";
+var VERSION="4.11";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"],[1250,"Leyenda","#D4537E","#993556","#F4C0D1","#4B1528"],[1500,"Campeón","#378ADD","#185FA5","#B5D4F4","#042C53"],[1750,"Élite","#E24B4A","#A32D2D","#F7C1C1","#501313"],[2000,"Gran Maestro","#5F5E5A","#FAC775","#2C2C2A","#FAC775"]];
 function medV(){var t=DEX.p.length;return MED.filter(function(m){return m[0]<=t})}
@@ -559,11 +559,11 @@ $("file").onchange=async function(){
  try{if(/\.json$/i.test(f.name)){var j=JSON.parse(await f.text());if(!j.caps)throw new Error("JSON inválido");caps=j.caps}
   else caps=await parseXlsx(await f.arrayBuffer())}catch(e){toast("No pude leer el archivo: "+e.message,{sticky:1});return}
  var k=Object.keys(caps).length;
- var nu=Object.keys(caps).filter(function(n){return !(n in S.caps)}).length;
- var i=await modal('<h3>Importar respaldo</h3><p>El archivo trae <b>'+k+'</b> capturados y tú tienes <b>'+Object.keys(S.caps).length+'</b>.</p><p class="mut"><b>Combinar</b> suma al tuyo las '+nu+' que no tienes y mantiene las demás. <b>Reemplazar</b> deja tus capturas iguales al archivo.</p>',[{t:"Cancelar"},{t:"Combinar",pri:1},{t:"Reemplazar"}]);
+ var nu=Object.keys(caps).filter(function(n){return !(n in S.caps)}).length,have=Object.keys(S.caps).length,tt=DEX.p.length,mg=have+nu;
+ var i=await modal('<h3>Importar respaldo</h3><p>El archivo trae <b>'+k+'</b> capturados y tú tienes <b>'+have+'</b>.</p><p class="mut"><b>Combinar</b> suma las '+nu+' que no tienes y mantiene las demás: quedarías con <b>'+nf(mg)+'</b> y te faltarían <b>'+nf(tt-mg)+'</b>.</p><p class="mut"><b>Reemplazar</b> deja tus capturas iguales al archivo: quedarías con <b>'+nf(k)+'</b> y te faltarían <b>'+nf(tt-k)+'</b>.</p>',[{t:"Cancelar"},{t:"Combinar",pri:1},{t:"Reemplazar"}]);
  if(i!==1&&i!==2)return;
  if(i===1){var m={};Object.keys(S.caps).forEach(function(n){m[n]=S.caps[n]});Object.keys(caps).forEach(function(n){if(!(n in m)||(!m[n]&&caps[n]))m[n]=caps[n]});caps=m}
- S.caps=caps;save();rnd=null;renderAll();checkMedals(true);toast((i===1?"Combinado: ":"Importado: ")+Object.keys(caps).length+" capturados",{sticky:1})};
+ S.caps=caps;save();rnd=null;renderAll();checkMedals(true);toast((i===1?"Combinado: ":"Importado: ")+Object.keys(caps).length+" capturados · faltan "+nf(DEX.p.length-Object.keys(caps).length),{sticky:1})};
 $("q").oninput=resetList;$("f").onchange=resetList;$("yr").onchange=function(){yr=$("yr").value;resetList()};
 
 $("t-prog").innerHTML=ico("chart")+"Mi progreso"+'<span id="pgp" class="pgp"></span>';$("vx").innerHTML=ico("x");$("vx").onclick=function(){closeViewer(false)};
@@ -596,14 +596,15 @@ $("lock").onclick=async function(){
  if(editing){finishEdit();return}
  var i=await modal('<h3>¿Empezar a editar?</h3><p class="mut">Podrás marcar capturados e importar respaldos hasta que toques «Terminar edición».</p>',[{t:"Cancelar"},{t:"Editar",pri:1}],true);
  if(i===1){setEdit(true);toast("Modo edición")}};
+function resumen(){var h=Object.keys(S.caps).length,t=DEX.p.length;return 'Tienes <b>'+nf(h)+'</b> de '+nf(t)+' y te faltan <b>'+nf(t-h)+'</b>.'}
 async function finishEdit(){
- var i=await modal('<h3>¿Terminar la edición?</h3><p class="mut">Se bloqueará el candado y ya no podrás marcar capturados.</p>',[{t:"Seguir editando"},{t:"Terminar",pri:1}],true);
+ var i=await modal('<h3>¿Terminar la edición?</h3><p>'+resumen()+'</p><p class="mut">Se bloqueará el candado y ya no podrás marcar capturados.</p>',[{t:"Seguir editando"},{t:"Terminar",pri:1}],true);
  if(i!==1)return;
  var a={};try{a=JSON.parse(editSnap||"{}")}catch(e){}
  var b=S.caps,n=0;Object.keys(b).forEach(function(k){if(!(k in a)||a[k]!==b[k])n++});Object.keys(a).forEach(function(k){if(!(k in b))n++});
  setEdit(false);
  if(!n){toast("Bloqueado");return}
- var j=await modal('<h3>¿Hacer un respaldo?</h3><p>Hiciste <b>'+n+'</b> cambio'+(n>1?"s":"")+' en esta edición. Te recomiendo exportar un respaldo nuevo. Elige Excel o JSON.</p>',[{t:"Ahora no"},{t:"Exportar JSON"},{t:"Exportar Excel",pri:1}],true);
+ var j=await modal('<h3>¿Hacer un respaldo?</h3><p>Hiciste <b>'+n+'</b> cambio'+(n>1?"s":"")+' en esta edición. Te recomiendo exportar un respaldo nuevo. Elige Excel o JSON.</p><p>'+resumen()+'</p>',[{t:"Ahora no"},{t:"Exportar JSON"},{t:"Exportar Excel",pri:1}],true);
  if(j===2)exportXlsx();else if(j===1)exportJson();else toast("Bloqueado")}
 $("edend").onclick=finishEdit;
 checkMedals(true);renderAll();

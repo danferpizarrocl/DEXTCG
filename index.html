@@ -194,7 +194,7 @@ function toast(m,o){o=o||{};var t=$("toast"),b=$("tb");b.innerHTML=(o.ico||"");v
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="4.9";
+var VERSION="4.10";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"],[1250,"Leyenda","#D4537E","#993556","#F4C0D1","#4B1528"],[1500,"Campeón","#378ADD","#185FA5","#B5D4F4","#042C53"],[1750,"Élite","#E24B4A","#A32D2D","#F7C1C1","#501313"],[2000,"Gran Maestro","#5F5E5A","#FAC775","#2C2C2A","#FAC775"]];
 function medV(){var t=DEX.p.length;return MED.filter(function(m){return m[0]<=t})}
@@ -548,9 +548,11 @@ async function exportXlsx(){
 $("bx").onclick=async function(){
  var i=await modal(summary(),[{t:"Cancelar"},{t:"Descargar Excel",pri:1}]);if(i!==1)return;
  await exportXlsx()};
+async function exportJson(){
+ try{await download("pokedex2025_respaldo_"+today()+".json",new Blob([JSON.stringify({app:"pokedex2025",v:1,fecha:today(),caps:S.caps},null,1)],{type:"application/json"}));stamp();toast("JSON guardado")}catch(e){toast("No se guardó",{sticky:1})}}
 $("bj").onclick=async function(){
  var i=await modal(summary(),[{t:"Cancelar"},{t:"Descargar JSON",pri:1}]);if(i!==1)return;
- try{await download("pokedex2025_respaldo_"+today()+".json",new Blob([JSON.stringify({app:"pokedex2025",v:1,fecha:today(),caps:S.caps},null,1)],{type:"application/json"}));stamp();toast("JSON guardado")}catch(e){toast("No se guardó",{sticky:1})}};
+ await exportJson()};
 $("bi").onclick=function(){if(!editing){locked();return}$("file").value="";$("file").click()};
 $("file").onchange=async function(){
  var f=this.files[0];if(!f)return;var caps;
@@ -601,8 +603,8 @@ async function finishEdit(){
  var b=S.caps,n=0;Object.keys(b).forEach(function(k){if(!(k in a)||a[k]!==b[k])n++});Object.keys(a).forEach(function(k){if(!(k in b))n++});
  setEdit(false);
  if(!n){toast("Bloqueado");return}
- var j=await modal('<h3>¿Hacer un respaldo?</h3><p>Hiciste <b>'+n+'</b> cambio'+(n>1?"s":"")+' en esta edición. Te recomiendo exportar un Excel nuevo para guardar el respaldo.</p>',[{t:"Ahora no"},{t:"Exportar Excel",pri:1}],true);
- if(j===1)exportXlsx();else toast("Bloqueado")}
+ var j=await modal('<h3>¿Hacer un respaldo?</h3><p>Hiciste <b>'+n+'</b> cambio'+(n>1?"s":"")+' en esta edición. Te recomiendo exportar un respaldo nuevo. Elige Excel o JSON.</p>',[{t:"Ahora no"},{t:"Exportar JSON"},{t:"Exportar Excel",pri:1}],true);
+ if(j===2)exportXlsx();else if(j===1)exportJson();else toast("Bloqueado")}
 $("edend").onclick=finishEdit;
 checkMedals(true);renderAll();
 setTimeout(function(){var e=$("spl");e.classList.add("h");setTimeout(function(){e.remove()},600)},1600);

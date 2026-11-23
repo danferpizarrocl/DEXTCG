@@ -195,7 +195,7 @@ function toast(m,o){o=o||{};var t=$("toast"),b=$("tb");b.innerHTML=(o.ico||"");v
 
 function spr(n,sz){return '<div class="spr"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><span>'+('000'+n).slice(-3)+'</span><img loading="lazy" alt="" src="'+SPR+n+'.png" onload="this.parentNode.classList.add(\'ld\')" onerror="this.remove()"></div>'}
 
-var VERSION="4.12";
+var VERSION="4.13";
 function numColor(p){return p>=.9?"#e53935":p>=.75?"#f57c00":p>=.5?"#d9a400":p>=.25?"#2e9e5b":"var(--ac)"}
 var MED=[[50,"Inicio","#639922","#3B6D11","#C0DD97","#173404"],[100,"Bronce","#D85A30","#993C1D","#F5C4B3","#712B13"],[250,"Plata","#888780","#5F5E5A","#D3D1C7","#2C2C2A"],[500,"Oro","#BA7517","#854F0B","#FAC775","#412402"],[750,"Platino","#1D9E75","#0F6E56","#9FE1CB","#04342C"],[1000,"Maestro","#7F77DD","#534AB7","#CECBF6","#26215C"],[1250,"Leyenda","#D4537E","#993556","#F4C0D1","#4B1528"],[1500,"Campeón","#378ADD","#185FA5","#B5D4F4","#042C53"],[1750,"Élite","#E24B4A","#A32D2D","#F7C1C1","#501313"],[2000,"Gran Maestro","#5F5E5A","#FAC775","#2C2C2A","#FAC775"]];
 function medV(){var t=DEX.p.length;return MED.filter(function(m){return m[0]<=t})}
@@ -245,7 +245,7 @@ function renderProg(){
  var tot=DEX.p.length, c=Object.keys(S.caps).length;
  var pct=(c/tot*100).toFixed(1).replace(".",",")+" %";
  $("pb").style.width=(c/tot*100)+"%";var pcol=numColor(c/tot);$("pb").style.background=pcol;$("pgp").style.color=pcol;$("pgp").innerHTML=pct+(c>=tot&&tot>0?goldMedal():"");
- $("pfalt").textContent=nf(tot-c);
+ $("pfalt").textContent=nf(tot-c);$("pfalt").style.color=pcol;
  $("dexdone").style.display=dexDone()?"flex":"none";$("dexdone").innerHTML=dexDone()?goldMedal()+"Dex completada":"";renderLog();
  $("regs").innerHTML=regions.map(function(r){var a=byReg[r],k=a.filter(isOn).length;
   return '<div class="rg"><b>'+riIcon(r)+'<span>'+r+'</span>'+(k===a.length&&a.length?goldMedal():'')+'</b><div class="bar"><i style="width:'+(k/a.length*100)+'%;background:'+numColor(k/a.length)+'"></i></div><em style="color:'+numColor(k/a.length)+';font-weight:600">'+k+'/'+a.length+'</em></div>'}).join("");
